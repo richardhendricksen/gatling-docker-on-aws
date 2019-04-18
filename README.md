@@ -1,4 +1,4 @@
-##Using ecs-cli:
+## Using ecs-cli:
 
 ### Install:
 install ecs-cli: https://github.com/aws/amazon-ecs-cli  
@@ -21,14 +21,14 @@ Add to the generated IAM role AmazonS3FullAccess to enable S3 access
 
 `ecs-cli down`  
 
-##Creating docker image:
+## Creating docker image:
 
 `docker build -t gatling .`     
 
-###Test local:
+### Test local:
 `docker run --rm gatling -o`  
 
-###Push to AWS:
+### Push to AWS:
 `export AWS_ACCESS_KEY_ID=EXAMPLE`  
 `export AWS_SECRET_ACCESS_KEY=EXAMPLEKEY`  
 `export AWS_DEFAULT_PROFILE=profile`  
