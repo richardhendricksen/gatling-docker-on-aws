@@ -1,5 +1,7 @@
 # Distributed Gatling testing using Docker on AWS
 
+Read my blog post about it [here](https://richardhendricksen.github.io/2019/04/28/distributed-load-testing-using-gatling-with-docker-on-aws/).
+
 ## Running locally
 Run test using `mvn clean gatling:test`  
 
@@ -21,30 +23,30 @@ Tag and push local image to ECR:
 Logout from Amazon ECR:  
 `docker logout https://<id>.dkr.ecr.eu-west-1.amazonaws.com`
 
-## Using ecs-cli:
+## Running on AWS
 
-### Install:
-Download from here: `https://github.com/aws/amazon-ecs-cli#latest-version`  
+### Setting up ECS
+
+### Install ecs-cli tools:
+Download from [here](https://github.com/aws/amazon-ecs-cli#latest-version).  
 
 Configure your profile:  
 `ecs-cli configure profile --profile-name default --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY`  
-Check here for more info:   
-https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cmd-ecs-cli-configure-profile.html  
+Check [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cmd-ecs-cli-configure-profile.html) for more info.  
 
 ### Create cluster using EC2:
 
 `ecs-cli configure --cluster gatlingCluster --region eu-west-1 --config-name gatlingConfiguration`  
 `ecs-cli up --capability-iam --instance-type t3.large --size 1`  
 
-Add to the generated IAM role AmazonS3FullAccess to enable S3 access  
-
+IMPORTANT: The command will generate all the needed stuff, but make sure to add to the generated IAM role the policy for writing to your S3 bucket.
 
 ### OR Create cluster using Fargate:
 `ecs-cli configure --cluster gatlingCluster --region eu-west-1 --default-launch-type FARGATE --config-name gatlingConfiguration`  
 `ecs-cli up`  
 
-Create ecs-params.yml with:  
-```
+Create `ecs-params.yml` file:  
+```yaml
 version: 1
 task_definition:
   task_role_arn: <role with S3 rights>
@@ -78,4 +80,7 @@ run_params:
 `ecs-cli logs --task-id 6a843067-5073-42c1-ae55-3902f7ae73ce --follow`  
 
 ### Remove cluster:
-`ecs-cli down`  
+`ecs-cli down --force`  
+
+## Creating HTML report
+`./consolidate_reports -r <bucket_name> [-p <aws_profile>]`
