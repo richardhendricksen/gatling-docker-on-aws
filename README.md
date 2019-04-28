@@ -77,7 +77,7 @@ run_params:
 `ecs-cli compose ps`  
 
 ### Getting logging from a task:
-`ecs-cli logs --task-id 6a843067-5073-42c1-ae55-3902f7ae73ce --follow`  
+`ecs-cli logs --task-id <task_id> --follow`  
 
 ### Remove cluster:
 `ecs-cli down --force`  
