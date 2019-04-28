@@ -1,3 +1,26 @@
+# Distributed Gatling testing using Docker on AWS
+
+## Running locally
+Run test using `mvn clean gatling:test`  
+
+## Creating docker image:
+
+`docker build -t gatling-runner .`     
+
+### Test local via Docker:
+`docker run --rm gatling -o`  
+
+### Push to AWS:
+`export AWS_ACCESS_KEY_ID=EXAMPLE`  
+`export AWS_SECRET_ACCESS_KEY=EXAMPLEKEY`  
+`export AWS_DEFAULT_PROFILE=profile`  
+`$(aws ecr get-login --no-include-email)`  
+`docker tag <image> xx.dkr.ecr.eu-west-1.amazonaws.com/gatling`  
+`docker push xx.dkr.ecr.eu-west-1.amazonaws.com/gatling`  
+`docker logout https://xxx.dkr.ecr.eu-west-1.amazonaws.com`
+
+
+
 ## Using ecs-cli:
 
 ### Install:
@@ -20,19 +43,3 @@ Add to the generated IAM role AmazonS3FullAccess to enable S3 access
 ### Remove cluster:
 
 `ecs-cli down`  
-
-## Creating docker image:
-
-`docker build -t gatling .`     
-
-### Test local:
-`docker run --rm gatling -o`  
-
-### Push to AWS:
-`export AWS_ACCESS_KEY_ID=EXAMPLE`  
-`export AWS_SECRET_ACCESS_KEY=EXAMPLEKEY`  
-`export AWS_DEFAULT_PROFILE=profile`  
-`$(aws ecr get-login --no-include-email)`  
-`docker tag <image> xx.dkr.ecr.eu-west-1.amazonaws.com/gatling`  
-`docker push xx.dkr.ecr.eu-west-1.amazonaws.com/gatling`  
-`docker logout https://xxx.dkr.ecr.eu-west-1.amazonaws.com`

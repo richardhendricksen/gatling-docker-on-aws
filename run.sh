@@ -44,7 +44,7 @@ fi
 rm -rf target/gatling/*
 
 # Running performance test without reports
-mvn gatling:execute -o
+mvn gatling:test -o
 
 #Upload reports
 for _dir in target/gatling/results/*/

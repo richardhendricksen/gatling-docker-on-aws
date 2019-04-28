@@ -39,7 +39,7 @@ then
     exit 1
 fi
 
-FOLDER="p1simulation-$(date +"%Y-%m-%d_%H:%M:%S")"
+FOLDER="simulation-$(date +"%Y-%m-%d_%H:%M:%S")"
 
 rm -r target/gatling/*
 ## Download all logs for all test gatling clients
@@ -51,4 +51,4 @@ aws s3 cp s3://${REPORT_BUCKET}/logs/ target/gatling/results/$FOLDER --recursive
 ## Upload consolidated gatling html reports back to s3
 aws s3 cp target/gatling/results/ s3://${REPORT_BUCKET}/gatling/ --recursive
 
-echo https://s3-eu-west-1.amazonaws.com/richard-performance-testing/gatling/$FOLDER/index.html
+echo https://s3-eu-west-1.amazonaws.com/${REPORT_BUCKET}/gatling/$FOLDER/index.html

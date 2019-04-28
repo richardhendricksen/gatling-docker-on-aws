@@ -1,11 +1,11 @@
 version: '2'
 services:
   gatling-runner:
-    image: 998479164768.dkr.ecr.eu-west-1.amazonaws.com/gatling:latest
-    command: -r richard-performance-testing
+    image: <id>.dkr.ecr.eu-west-1.amazonaws.com/gatling-runner:latest
+    command: -r <bucketname>
     logging:
       driver: awslogs
       options:
-        awslogs-group: /ecs/gatling
+        awslogs-group: /ecs/gatling-runner
         awslogs-region: eu-west-1
-        awslogs-stream-prefix: gatling
+        awslogs-stream-prefix: gatling-runner
