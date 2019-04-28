@@ -2,13 +2,12 @@ FROM maven:3.6.0-jdk-8-alpine
 
 LABEL maintainer="Richard Hendricksen <richard.hendricksen@codecontrol.nl>"
 
-RUN apk update && \
-    apk add -Uuv python less py-pip
+RUN apk add -Uuv python less py-pip openssl tzdata
 RUN pip install awscli
-RUN apk add -U tzdata && \
-    cp /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime
-RUN apk --purge -v del py-pip
-RUN rm /var/cache/apk/*
+RUN cp /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime
+
+RUN apk --purge -v del py-pip && \
+    rm /var/cache/apk/*
 
 WORKDIR /build
 
