@@ -9,7 +9,7 @@ Run test using `mvn clean gatling:test`
 `docker build -t gatling-runner .`     
 
 ### Test docker image locally:
-Use docker volume to add your AWS credentials that has permission to write to the S3 bucket:  
+Use docker volume to add your AWS credentials that has permission to write to the S3 bucket. You can also optionally provide the AWS profile:  
 `docker run --rm -v ${HOME}/.aws/credentials:/root/.aws/credentials:ro gatling-runner -r <bucketname> [-p <profile]`  
 
 ### Push docker image to Amazon ECR:
