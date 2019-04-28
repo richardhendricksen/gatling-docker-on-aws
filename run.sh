@@ -40,14 +40,14 @@ if [ -z "$REPORT_BUCKET" ]
         exit 1
 fi
 
-## Clean bucket
+## Clean reports
 rm -rf target/gatling/*
 
-# Running performance test without reports
+# Running performance test
 mvn gatling:test -o
 
 #Upload reports
-for _dir in target/gatling/results/*/
+for _dir in target/gatling/*/
 do
    aws s3 cp ${_dir}simulation.log s3://${REPORT_BUCKET}/logs/$HOSTNAME-simulation.log
 done
