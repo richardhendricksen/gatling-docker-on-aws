@@ -13,8 +13,8 @@ Use docker volume to add your AWS credentials that has permission to write to th
 ### Push docker image to Amazon ECR:
 First login:  
 `$(aws ecr get-login --no-include-email)`  
-Check repositories available:
-`aws ecr describe-repositories`
+Check repositories available:  
+`aws ecr describe-repositories`  
 Tag and push local image to ECR:  
 `docker tag gatling-runner <id>.dkr.ecr.eu-west-1.amazonaws.com/gatling-runner`  
 `docker push <id>.dkr.ecr.eu-west-1.amazonaws.com/gatling-runner`  
@@ -28,7 +28,7 @@ Download from here: `https://github.com/aws/amazon-ecs-cli#latest-version`
 
 Configure your profile:  
 `ecs-cli configure profile --profile-name default --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY`  
-Check here for more info:  
+Check here for more info:   
 https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cmd-ecs-cli-configure-profile.html  
 
 ### Create cluster using EC2:
