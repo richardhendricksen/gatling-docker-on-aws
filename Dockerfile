@@ -1,13 +1,12 @@
 FROM maven:3.6.0-jdk-8-alpine
 
-RUN apk update
+LABEL maintainer="Richard Hendricksen <richard.hendricksen@codecontrol.nl>"
 
-RUN apk add -Uuv python less py-pip
-
-RUN apk add -U tzdata && \
-  cp /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime
-
+RUN apk update && \
+    apk add -Uuv python less py-pip
 RUN pip install awscli
+RUN apk add -U tzdata && \
+    cp /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime
 RUN apk --purge -v del py-pip
 RUN rm /var/cache/apk/*
 
@@ -17,7 +16,7 @@ COPY pom.xml .
 RUN mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.1:go-offline
 
 COPY src/ /build/src
-COPY run.sh .
+COPY bin/run.sh .
 
 RUN mvn install --offline
 
