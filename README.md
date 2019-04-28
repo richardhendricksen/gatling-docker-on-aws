@@ -24,12 +24,12 @@ Logout from Amazon ECR:
 ## Using ecs-cli:
 
 ### Install:
-Download from here: `https://github.com/aws/amazon-ecs-cli#latest-version`
+Download from here: `https://github.com/aws/amazon-ecs-cli#latest-version`  
 
 Configure your profile:  
 `ecs-cli configure profile --profile-name default --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY`  
-Check here for more info: 
-https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cmd-ecs-cli-configure-profile.html
+Check here for more info:  
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cmd-ecs-cli-configure-profile.html  
 
 ### Create cluster using EC2:
 
@@ -40,10 +40,10 @@ Add to the generated IAM role AmazonS3FullAccess to enable S3 access
 
 
 ### OR Create cluster using Fargate:
-`ecs-cli configure --cluster gatlingCluster --region eu-west-1 --default-launch-type FARGATE --config-name gatlingConfiguration`
-`ecs-cli up`
+`ecs-cli configure --cluster gatlingCluster --region eu-west-1 --default-launch-type FARGATE --config-name gatlingConfiguration`  
+`ecs-cli up`  
 
-Create ecs-params.yml with:
+Create ecs-params.yml with:  
 ```
 version: 1
 task_definition:
@@ -66,7 +66,7 @@ run_params:
 ```
 
 ### Running docker container as task on the cluster:
-`ecs-cli compose up`
+`ecs-cli compose up`  
 
 ### To scale the load test, use this:  
 `ecs-cli compose scale 2`  
