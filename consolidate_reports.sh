@@ -43,12 +43,12 @@ FOLDER="simulation-$(date +"%Y-%m-%d_%H:%M:%S")"
 
 rm -r target/gatling/*
 ## Download all logs for all test gatling clients
-aws s3 cp s3://${REPORT_BUCKET}/logs/ target/gatling/results/$FOLDER --recursive
+aws s3 cp s3://${REPORT_BUCKET}/logs/ target/gatling/logs --recursive
 
 ## Consolidate reports from these clients
-./gatling/gatling-charts-highcharts-bundle-3.0.3/bin/gatling.sh -ro $(pwd)/target/gatling/results/$FOLDER
+mvn gatling:test -DgenerateReport=true
 
 ## Upload consolidated gatling html reports back to s3
-aws s3 cp target/gatling/results/ s3://${REPORT_BUCKET}/gatling/ --recursive
+aws s3 cp target/gatling/ s3://${REPORT_BUCKET}/gatling/$FOLDER --recursive
 
 echo https://s3-eu-west-1.amazonaws.com/${REPORT_BUCKET}/gatling/$FOLDER/index.html

@@ -14,6 +14,32 @@
         <gatling-maven-plugin.version>3.0.1</gatling-maven-plugin.version>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>run test</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <reportsOnly></reportsOnly>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>create HTML report</id>
+            <activation>
+                <property>
+                    <name>generateReport</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+                <reportsOnly>${project.basedir}/target/gatling/</reportsOnly>
+
+            </properties>
+        </profile>
+    </profiles>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -121,6 +147,7 @@
                 <version>${gatling-maven-plugin.version}</version>
                 <configuration>
                     <failOnError>true</failOnError>
+                    <reportsOnly>${reportsOnly}</reportsOnly>
                     <jvmArgs>
                         <jvmArg>-Xss20M</jvmArg>
                     </jvmArgs>
