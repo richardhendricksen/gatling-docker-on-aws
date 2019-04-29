@@ -1,6 +1,6 @@
 # Distributed Gatling testing using Docker on AWS
 
-Read my blog post about it [here](https://richardhendricksen.github.io/2019/04/28/distributed-load-testing-using-gatling-with-docker-on-aws/).
+Read more about it in my blog post [here](https://medium.com/@richard.hendricksen/distributed-load-testing-with-gatling-using-docker-and-aws-d497605692db).
 
 ## Running locally
 Run test using `mvn clean gatling:test`  
