@@ -1,12 +1,12 @@
 package nl.codecontrol.gatling.simulations
 
 import io.gatling.core.Predef._
-import nl.codecontrol.gatling.scenarios.BasicScenario
+import nl.codecontrol.gatling.scenarios.BasicScenario.basicScenario
 import nl.codecontrol.gatling.config.Config._
 
 import scala.language.postfixOps
 
-class BasicSimulation extends Simulation with BasicScenario {
+class BasicSimulation extends Simulation {
 
   println("Configuration:")
   println(s"BaseURL: ${baseUrl}")
