@@ -1,21 +1,17 @@
-language: java
-services:
-  - docker
 env:
   global:
     - AWS_DEFAULT_REGION=eu-west-1
+    - secure: TlICXJ1xFPgOC4M81bAR2KKdM/baFSvCu+NR4yRMEoL8qKrjNFXqlqxi74fQXzQXmabUnA2ItaB2eblsJtvY8CEpMiGA4WnwEEgiOg4ymzsHNpNvG0ZqeqLZ9hYNnMlRbGPrmowKoGgpGMAtVR/xvgnsdreMli933Far/x2i9IkJp9HjCm0NQ7QiOWp4cevv0w1MMS6q+RsmVo1CX++hgneUMR+oc6Ov8vp6JNhAyxaqZ2qP+Rload4P5ixvokReVFwdf7CDtBFoH1NX/kfMYgXafux+T97FM0ZkbNA8KsakWxQVSy2GqEvW6KV7Z5NfjXs8vGqpo9ZTlzvkYWX79qV2DQiCHpWxl8V2AsQg2/ncxXK6Sl/QyGnO4voIjuy6dYI+l752hlMdmdyFf1zay7nSdcHHhOyp0girmzr+T/7TmdNX8xBPqciUvo9UNsrad9zhmUpOWa5BSdgrpZZ0EzYmYhB4J6cg5I8LE2WYsLYhVe2jK0ZI3fSwWUGOIx9fxfw/TJgepSNAoxMxSoRAh8QnmViTp4TwIEX8YWeeb1NH9jx4vS+SAJ8uG82KHGunTE5H5hejKf1zx3oOZl4GOd9ddvae6d0+kTKW3BEQQwuAxQ796NuUfdli9C0A6aiIEL0CYK6NasOZpoUAqZYk+OvDLLPmGl6YFImoZxq1k6s=
+    - secure: I/VVVcMrIiGsxWEJI6KDy7PLaCFNBmeomhzmMWbadnJb/qh2T/4nz+uyUoY/S9Qx6B75Bzl0nZE44w02M89j9PCTtb6NiWnXDBQ0wWwUvC6YIzojl8ynbbDUYaCOyxAitsw75ZXzrDoMdmu4q0jkHmCMJpW3Dm6eDVBZre2Ks04KyfKVCfoUU8EdzvKAuvpdiCLw079Z3It3161SDCCTpaqGZdgLiQZaJ8lc6DfoXObp3jzIzBpSIyPVTOlJ4+/SNPtNNzxc+++bdN0iHcPaKkZLIfjujcmud87o86DZNpAQ94WV08dclZAxenmWyxmucUUp01WZTUy9snsLAnIypGKn0n7wGxwf9KFR0TfJo7BHEPa1E/zEybEV83/N5k+yca8hiZdhHaFVeWJqpJuO/sfGgIJfIDbgwqHER9sYRpZHLvtcFqPgrB+2vhKLWzyDlEZRMFFZBiRjz6gHhlCCgyRluDSVtGYub0O/cd5O79mIjPOLZ/v8YuQ4II5wxeZYLeJdkAhenoTSC0nS7YGIkHngb71cChgUTLHkUr6cobPvfMjg0mS2i3SwVDT7tJCmqOQ8y5Ynu2MQYyYA4sMkeMW4N0b4ZVcHB9JPV5Gcrdm+k0urEc+45ftB4HLz8oazGwrz9THtehEzKkA7x4A6pREXkBFiaT729BHwqE1cqiE=
     - ECR_REPOSITORY_NAME=gatling-runner
     - ECS_CLUSTER=gatlingCluster
     - S3_BUCKET=gatling-runner
-    - secure: TlICXJ1xFPgOC4M81bAR2KKdM/baFSvCu+NR4yRMEoL8qKrjNFXqlqxi74fQXzQXmabUnA2ItaB2eblsJtvY8CEpMiGA4WnwEEgiOg4ymzsHNpNvG0ZqeqLZ9hYNnMlRbGPrmowKoGgpGMAtVR/xvgnsdreMli933Far/x2i9IkJp9HjCm0NQ7QiOWp4cevv0w1MMS6q+RsmVo1CX++hgneUMR+oc6Ov8vp6JNhAyxaqZ2qP+Rload4P5ixvokReVFwdf7CDtBFoH1NX/kfMYgXafux+T97FM0ZkbNA8KsakWxQVSy2GqEvW6KV7Z5NfjXs8vGqpo9ZTlzvkYWX79qV2DQiCHpWxl8V2AsQg2/ncxXK6Sl/QyGnO4voIjuy6dYI+l752hlMdmdyFf1zay7nSdcHHhOyp0girmzr+T/7TmdNX8xBPqciUvo9UNsrad9zhmUpOWa5BSdgrpZZ0EzYmYhB4J6cg5I8LE2WYsLYhVe2jK0ZI3fSwWUGOIx9fxfw/TJgepSNAoxMxSoRAh8QnmViTp4TwIEX8YWeeb1NH9jx4vS+SAJ8uG82KHGunTE5H5hejKf1zx3oOZl4GOd9ddvae6d0+kTKW3BEQQwuAxQ796NuUfdli9C0A6aiIEL0CYK6NasOZpoUAqZYk+OvDLLPmGl6YFImoZxq1k6s=
-    - secure: I/VVVcMrIiGsxWEJI6KDy7PLaCFNBmeomhzmMWbadnJb/qh2T/4nz+uyUoY/S9Qx6B75Bzl0nZE44w02M89j9PCTtb6NiWnXDBQ0wWwUvC6YIzojl8ynbbDUYaCOyxAitsw75ZXzrDoMdmu4q0jkHmCMJpW3Dm6eDVBZre2Ks04KyfKVCfoUU8EdzvKAuvpdiCLw079Z3It3161SDCCTpaqGZdgLiQZaJ8lc6DfoXObp3jzIzBpSIyPVTOlJ4+/SNPtNNzxc+++bdN0iHcPaKkZLIfjujcmud87o86DZNpAQ94WV08dclZAxenmWyxmucUUp01WZTUy9snsLAnIypGKn0n7wGxwf9KFR0TfJo7BHEPa1E/zEybEV83/N5k+yca8hiZdhHaFVeWJqpJuO/sfGgIJfIDbgwqHER9sYRpZHLvtcFqPgrB+2vhKLWzyDlEZRMFFZBiRjz6gHhlCCgyRluDSVtGYub0O/cd5O79mIjPOLZ/v8YuQ4II5wxeZYLeJdkAhenoTSC0nS7YGIkHngb71cChgUTLHkUr6cobPvfMjg0mS2i3SwVDT7tJCmqOQ8y5Ynu2MQYyYA4sMkeMW4N0b4ZVcHB9JPV5Gcrdm+k0urEc+45ftB4HLz8oazGwrz9THtehEzKkA7x4A6pREXkBFiaT729BHwqE1cqiE=
 before_install:
   - pip install --user awscli
   - wget -q https://s3.amazonaws.com/amazon-ecs-cli/ecs-cli-linux-amd64-latest
   - mv ecs-cli-linux-amd64-latest ecs-cli
   - chmod +x ecs-cli
   - export PATH=$PATH:$PWD
-  - ecs-cli --version
 jobs:
   include:
     - stage: Build docker image
@@ -23,4 +19,5 @@ jobs:
     - stage: Execute Gatling test
       script: ./scripts/runLoadtestOnAWS.sh -r ${S3_BUCKET} -c 2 -u 10 -d 1 -ramp 10 -cl $ECS_CLUSTER
     - stage: Generate report
+      language: java
       script: ./scripts/generateHTMLReport.sh -r ${S3_BUCKET}
