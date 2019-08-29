@@ -9,6 +9,10 @@ env:
     - secure: I/VVVcMrIiGsxWEJI6KDy7PLaCFNBmeomhzmMWbadnJb/qh2T/4nz+uyUoY/S9Qx6B75Bzl0nZE44w02M89j9PCTtb6NiWnXDBQ0wWwUvC6YIzojl8ynbbDUYaCOyxAitsw75ZXzrDoMdmu4q0jkHmCMJpW3Dm6eDVBZre2Ks04KyfKVCfoUU8EdzvKAuvpdiCLw079Z3It3161SDCCTpaqGZdgLiQZaJ8lc6DfoXObp3jzIzBpSIyPVTOlJ4+/SNPtNNzxc+++bdN0iHcPaKkZLIfjujcmud87o86DZNpAQ94WV08dclZAxenmWyxmucUUp01WZTUy9snsLAnIypGKn0n7wGxwf9KFR0TfJo7BHEPa1E/zEybEV83/N5k+yca8hiZdhHaFVeWJqpJuO/sfGgIJfIDbgwqHER9sYRpZHLvtcFqPgrB+2vhKLWzyDlEZRMFFZBiRjz6gHhlCCgyRluDSVtGYub0O/cd5O79mIjPOLZ/v8YuQ4II5wxeZYLeJdkAhenoTSC0nS7YGIkHngb71cChgUTLHkUr6cobPvfMjg0mS2i3SwVDT7tJCmqOQ8y5Ynu2MQYyYA4sMkeMW4N0b4ZVcHB9JPV5Gcrdm+k0urEc+45ftB4HLz8oazGwrz9THtehEzKkA7x4A6pREXkBFiaT729BHwqE1cqiE=
 before_install:
   - pip install --user awscli
+  - wget -q https://s3.amazonaws.com/amazon-ecs-cli/ecs-cli-linux-amd64-latest
+  - mv ecs-cli-linux-amd64-latest ecs-cli
+  - chmod +x ecs-cli
+  - PATH=$PATH:$PWD/ecs-cli
 script:
   - ./scripts/buildDockerImage.sh -i $AWS_ID -r $AWS_DEFAULT_REGION
   - ./scripts/runLoadtestOnAWS.sh -r gatling-runner -c 1 -u 1 -d 1 -ramp 0 -cl gatlingCluster
