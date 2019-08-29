@@ -3,14 +3,14 @@ set -e
 
 function help_text {
     cat <<EOF
-    Usage: $0 [ -r|--report-bucket string ] [ -c|--containers n ] [ -u|--users n ] [ -d|--duration m ] [ -ramp|--ramp-up s ] [ -b|--base-url string ] [ -p|--profile PROFILE ] [-h]
+    Usage: $0 [ -r|--report-bucket string ] [ -c|--containers n ] [ -u|--users n ] [ -d|--duration m ] [ -ramp|--ramp-up s ] [ -cl|--ecs-cluster ] [ -p|--profile PROFILE ] [-h]
 
         -r, -report-bucket string           (required) Name of the S3 bucket to upload/download logs from and upload the reports to. Must be in same AWS account as profile.
         -c, --containers n                  (required) Number of concurrent Docker containers
         -u, --users n                       (required) Number of concurrent users
         -d, --duration m                    (required) Max duration of loadtest in minutes
         -ramp, --rampup s                   (required) Rampup time in seconds
-        -b, --base-url string               (required) Baseurl for Gatling
+        -cl, --ecs-cluster string           (required) ECS Cluster to run on
         -p, --profile PROFILE               (optional) The profile to use from ~/.aws/credentials.
 EOF
     exit 1
@@ -46,8 +46,8 @@ while [ $# -gt 0 ]; do
             export GATLING_RAMPUP_TIME="$2"
             shift; shift;
         ;;
-        -b|--base-url)
-            export GATLING_BASEURL="$2"
+        -cl|--ecs-cluster)
+            export AWS_ECS_CLUSTER="$2"
             shift; shift;
         ;;
         *)
@@ -88,9 +88,9 @@ then
     help_text
     exit 1
 fi
-if [[ -z "$GATLING_BASEURL" ]]
+if [[ -z "$AWS_ECS_CLUSTER" ]]
 then
-    echo "Baseurl is required."
+    echo "ECS cluster is required."
     help_text
     exit 1
 fi
@@ -100,7 +100,7 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd ${DIR}/..
 
 # Check no tasks are running on cluster
-RUNNING_TASKS=$(ecs-cli ps --cluster <cluster_name> --desired-status RUNNING)
+RUNNING_TASKS=$(ecs-cli ps --cluster ${AWS_ECS_CLUSTER} --desired-status RUNNING)
 if [[ ${RUNNING_TASKS} != "" ]]
 then
     echo "There are still tasks running on cluster, load test aborted:"
@@ -117,12 +117,12 @@ aws s3 rm s3://${AWS_REPORT_BUCKET}/logs --recursive
 # Run loadtest
 echo "Running loadtest with ${DOCKER_NR_CONTAINERS} containers with ${GATLING_NR_USERS} users each"
 echo "For a total of $(($DOCKER_NR_CONTAINERS * $GATLING_NR_USERS)) concurrent users"
-ecs-cli compose scale ${DOCKER_NR_CONTAINERS} --cluster <cluster_name> --launch-type FARGATE
+ecs-cli compose scale ${DOCKER_NR_CONTAINERS} --cluster ${AWS_ECS_CLUSTER} --launch-type FARGATE
 
 # Wait until all containers are stopped
 MAX_WAIT_TIME=180 # 90 min * 60 / 30s
 COUNT=0
-until [[ $(ecs-cli ps --cluster <cluster_name> --desired-status RUNNING) == "" ]]
+until [[ $(ecs-cli ps --cluster ${AWS_ECS_CLUSTER} --desired-status RUNNING) == "" ]]
 do
     echo "Tasks are running on cluster..."
     sleep 30s
