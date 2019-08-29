@@ -12,7 +12,9 @@ before_install:
   - wget -q https://s3.amazonaws.com/amazon-ecs-cli/ecs-cli-linux-amd64-latest
   - mv ecs-cli-linux-amd64-latest ecs-cli
   - chmod +x ecs-cli
-  - PATH=$PATH:$PWD/ecs-cli
+  - export PATH=$PATH:$PWD/ecs-cli
+  - echo $PATH
+  - ecs-cli --version
 script:
   - ./scripts/buildDockerImage.sh -i $AWS_ID -r $AWS_DEFAULT_REGION
   - ./scripts/runLoadtestOnAWS.sh -r gatling-runner -c 1 -u 1 -d 1 -ramp 0 -cl gatlingCluster
