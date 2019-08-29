@@ -31,6 +31,6 @@ jobs:
         artifacts:
           s3_region: $AWS_DEFAULT_REGION
           paths:
-            - ./target/gatling/*
+            - ./target/gatling/**/*
           target_paths:
             - /reports/
