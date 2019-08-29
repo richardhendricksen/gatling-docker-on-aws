@@ -1,12 +1,12 @@
 version: '2'
 services:
   gatling-runner:
-    image: <id>.dkr.ecr.eu-west-1.amazonaws.com/gatling-runner:latest
-    command: -r <s3 bucket>
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-1.amazonaws.com/gatling-runner:latest
+    command: -r ${AWS_REPORT_BUCKET}
     environment:
-      - GATLING_NR_USERS=1
-      - GATLING_MAX_DURATION=1
-      - GATLING_RAMPUP_TIME=10
+      - GATLING_NR_USERS=${GATLING_NR_USERS}
+      - GATLING_MAX_DURATION=${GATLING_MAX_DURATION}
+      - GATLING_RAMPUP_TIME=${GATLING_RAMPUP_TIME}
     ulimits:
       nproc: 65535
       nofile:
