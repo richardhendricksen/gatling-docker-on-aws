@@ -14,6 +14,11 @@ before_install:
   - chmod +x ecs-cli
   - export PATH=$PATH:$PWD
   - ecs-cli --version
-script:
-  - ./scripts/buildDockerImage.sh -i $AWS_ACCOUNT_ID -r $AWS_DEFAULT_REGION
-  - ./scripts/runLoadtestOnAWS.sh -r gatling-runner -c 1 -u 1 -d 1 -ramp 0 -cl gatlingCluster
+jobs:
+  include:
+    - stage: Build docker image
+      script: ./scripts/buildDockerImage.sh -i $AWS_ACCOUNT_ID -r $AWS_DEFAULT_REGION
+    - stage: Execute Gatling test
+      script: ./scripts/runLoadtestOnAWS.sh -c 1 -u 1 -d 1 -ramp 0 -cl gatlingCluster
+    - stage: Generate report
+      script: ./scripts/generateHTMLReport.sh -r gatling-runner
