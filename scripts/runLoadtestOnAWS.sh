@@ -2,11 +2,11 @@
 
 function help_text {
     cat <<EOF
-    Usage: $0 [ -r|--report-bucket string ] [ -c|--containers n ] [ -s|--students n ] [ -d|--duration m ] [ -ramp|--ramp-up s ] [ -b|--base-url string ] [ -p|--profile PROFILE ] [-h]
+    Usage: $0 [ -r|--report-bucket string ] [ -c|--containers n ] [ -u|--users n ] [ -d|--duration m ] [ -ramp|--ramp-up s ] [ -b|--base-url string ] [ -p|--profile PROFILE ] [-h]
 
         -r, -report-bucket string           (required) Name of the S3 bucket to upload/download logs from and upload the reports to. Must be in same AWS account as profile.
         -c, --containers n                  (required) Number of concurrent Docker containers
-        -u, --users n                    (required) Number of concurrent users
+        -u, --users n                       (required) Number of concurrent users
         -d, --duration m                    (required) Max duration of loadtest in minutes
         -ramp, --rampup s                   (required) Rampup time in seconds
         -b, --base-url string               (required) Baseurl for Gatling
@@ -111,14 +111,11 @@ fi
 echo "Removing existing log files from S3 bucket"
 aws s3 rm s3://${AWS_REPORT_BUCKET}/logs --recursive
 
-# Build docker image
-${DIR}/buildDockerImage.sh
-
 # Run loadtest
 ## Start all containers
 # Run loadtest
-echo "Running loadtest with ${DOCKER_NR_CONTAINERS} containers with ${GATLING_NR_STUDENTS} students each"
-echo "For a total of $(($DOCKER_NR_CONTAINERS * $GATLING_NR_STUDENTS)) concurrent users"
+echo "Running loadtest with ${DOCKER_NR_CONTAINERS} containers with ${GATLING_NR_USERS} users each"
+echo "For a total of $(($DOCKER_NR_CONTAINERS * $GATLING_NR_USERS)) concurrent users"
 ecs-cli compose scale ${DOCKER_NR_CONTAINERS} --cluster <cluster_name> --launch-type FARGATE
 
 # Wait until all containers are stopped
