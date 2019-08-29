@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/richardhendricksen/gatling-docker-on-aws.svg?branch=master)](https://travis-ci.org/richardhendricksen/gatling-docker-on-aws)
-# Distributed Gatling testing using Docker on AWS
+# Distributed Gatling testing using Docker on AWS [![Build Status](https://travis-ci.org/richardhendricksen/gatling-docker-on-aws.svg?branch=master)](https://travis-ci.org/richardhendricksen/gatling-docker-on-aws)
+
 
 Read more about it in my blog post [here](https://medium.com/@richard.hendricksen/distributed-load-testing-with-gatling-using-docker-and-aws-d497605692db).
 
