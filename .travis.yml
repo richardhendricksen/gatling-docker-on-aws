@@ -20,7 +20,7 @@ before_install:
 jobs:
   include:
     - stage: Build docker image
-      script: ./scripts/buildDockerImage.sh -n $ECR_REPOSITORY_NAME -r $AWS_DEFAULT_REGION
+      script: ./scripts/buildDockerImage.sh -n $ECR_REPOSITORY_NAME
     - stage: Execute Gatling test
       script: ./scripts/runLoadtestOnAWS.sh -r ${S3_BUCKET} -c 2 -u 10 -d 1 -ramp 10 -cl $ECS_CLUSTER
     - stage: Generate report
