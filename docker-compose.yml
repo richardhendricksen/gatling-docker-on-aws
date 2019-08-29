@@ -1,7 +1,7 @@
 version: '2'
 services:
   gatling-runner:
-    image: ${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-1.amazonaws.com/gatling-runner:latest
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:latest
     command: -r ${AWS_REPORT_BUCKET}
     environment:
       - GATLING_NR_USERS=${GATLING_NR_USERS}

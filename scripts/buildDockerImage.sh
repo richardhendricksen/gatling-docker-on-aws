@@ -3,12 +3,9 @@ set -e
 
 function help_text {
     cat <<EOF
-    Usage: $0 [ -i|--aws_account_id AWS_ACCOUNT_ID ] [ -r|--region ECR_REGION] [ -p|--profile PROFILE ] [-h]
+    Usage: $0 [ -n|--name ECR_REPOSITORY_NAME] [-h]
 
-        --aws_account_id AWS_ACCOUNT_ID   (required) AWS account id
-        --region REGION                   (required) Region of ECR repository
-        --profile PROFILE                 (optional) The profile to use from ~/.aws/credentials.
-
+        --name ECR_REPOSITORY_NAME        (required) ECR repository name.
 EOF
     exit 1
 }
@@ -19,16 +16,8 @@ while [ $# -gt 0 ]; do
         -h|--help)
             help_text
         ;;
-        -i|--aws_account_id)
-            export AWS_ACCOUNT_ID="$2"
-            shift; shift
-        ;;
-        -r|--region)
-            export ECR_REGION="$2"
-            shift; shift
-        ;;
-        -p|--profile)
-            export AWS_DEFAULT_PROFILE="$2"
+        -n|--name)
+            export ECR_REPOSITORY_NAME="$2"
             shift; shift
         ;;
         *)
@@ -39,16 +28,9 @@ while [ $# -gt 0 ]; do
     esac
 done
 
-if [ -z "$ECR_REGION" ]
+if [[ -z $ECR_REPOSITORY_NAME ]]
 then
-    echo "ECR region required."
-    help_text
-    exit 1
-fi
-
-if [ -z "$AWS_ACCOUNT_ID" ]
-then
-    echo "AWS Account id required."
+    echo "Missing arguments."
     help_text
     exit 1
 fi
@@ -57,11 +39,14 @@ fi
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd ${DIR}/..
 
+# Get AWS account id
+AWS_ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
+
 # Create docker image
 docker build -t gatling-runner .
 
 # Push docker image to AWS:
 $(aws ecr get-login --no-include-email)
-docker tag gatling-runner ${AWS_ACCOUNT_ID}.dkr.ecr.${ECR_REGION}.amazonaws.com/gatling-runner
-docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${ECR_REGION}.amazonaws.com/gatling-runner
-docker logout ${AWS_ACCOUNT_ID}.dkr.ecr.${ECR_REGION}.amazonaws.com/gatling-runner
+docker tag gatling-runner ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}
+docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}
+docker logout ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}

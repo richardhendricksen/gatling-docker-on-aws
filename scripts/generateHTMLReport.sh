@@ -3,13 +3,11 @@ set -e
 
 function help_text {
     cat <<EOF
-    Usage: $0 [ -c|--clear-logs ] [ -p|--profile PROFILE ] [ -u|--upload-report ] [ -r|--report-bucket REPORT_BUCKET ] [-h]
+    Usage: $0 [ -c|--clear-logs ] [ -u|--upload-report ] [ -r|--report-bucket REPORT_BUCKET ] [-h]
 
-        --clear-logs                    (optional) Clear the log folder in the S3 bucket after creating the report
-        --profile PROFILE               (optional) The profile to use from ~/.aws/credentials.
-        --upload-report                 (optional) Upload HTML report to S3 bucket
-        --report-bucket REPORT_BUCKET   (required) name of the S3 bucket to download logs from and upload the reports to. Must be in same AWS account as profile.
-                                                   It must be provided.
+        --clear-logs                    (optional) Clear the log folder in the S3 bucket after creating the report.
+        --upload-report                 (optional) Upload HTML report to S3 bucket.
+        --report-bucket REPORT_BUCKET   (required) name of the S3 bucket to download logs from and upload the reports to.
 EOF
     exit 1
 }
@@ -22,10 +20,6 @@ while [ $# -gt 0 ]; do
     case $arg in
         -h|--help)
             help_text
-        ;;
-        -p|--profile)
-            export AWS_DEFAULT_PROFILE="$2"
-            shift; shift
         ;;
         -r|--report-bucket)
             REPORT_BUCKET="$2"
@@ -47,7 +41,7 @@ while [ $# -gt 0 ]; do
     esac
 done
 
-if [ -z "$REPORT_BUCKET" ]
+if [[ -z $REPORT_BUCKET ]]
 then
     echo "Report bucket required."
     help_text
