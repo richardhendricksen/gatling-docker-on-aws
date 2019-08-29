@@ -62,7 +62,7 @@ FOLDER="simulation-$(date +"%Y-%m-%d_%H:%M:%S")"
 
 rm -f -r target/gatling/*
 ## Download all logs for all test gatling clients
-aws s3 cp s3://${REPORT_BUCKET}/logs/ target/gatling/$FOLDER --recursive
+aws s3 cp s3://${REPORT_BUCKET}/logs/ target/gatling/$FOLDER --recursive --no-progress
 
 ## Consolidate reports from these clients
 mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn gatling:test -DgenerateReport=true
