@@ -6,7 +6,7 @@ function help_text {
 
         -r, -report-bucket string           (required) Name of the S3 bucket to upload/download logs from and upload the reports to. Must be in same AWS account as profile.
         -c, --containers n                  (required) Number of concurrent Docker containers
-        -s, --students n                    (required) Number of concurrent students
+        -u, --users n                    (required) Number of concurrent users
         -d, --duration m                    (required) Max duration of loadtest in minutes
         -ramp, --rampup s                   (required) Rampup time in seconds
         -b, --base-url string               (required) Baseurl for Gatling
@@ -33,8 +33,8 @@ while [ $# -gt 0 ]; do
             DOCKER_NR_CONTAINERS="$2"
             shift; shift;
         ;;
-        -s|--students)
-            export GATLING_NR_STUDENTS="$2"
+        -u|--users)
+            export GATLING_NR_USERS="$2"
             shift; shift;
         ;;
         -d|--duration)
@@ -69,9 +69,9 @@ then
     help_text
     exit 1
 fi
-if [[ -z "$GATLING_NR_STUDENTS" ]]
+if [[ -z "$GATLING_NR_USERS" ]]
 then
-    echo "Nr students required."
+    echo "Nr users required."
     help_text
     exit 1
 fi
