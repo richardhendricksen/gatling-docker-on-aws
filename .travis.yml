@@ -1,3 +1,4 @@
+language: minimal
 env:
   global:
     - AWS_DEFAULT_REGION=eu-west-1
@@ -20,4 +21,5 @@ jobs:
       script: ./scripts/runLoadtestOnAWS.sh -r ${S3_BUCKET} -c 2 -u 10 -d 1 -ramp 10 -cl $ECS_CLUSTER
     - stage: Generate report
       language: java
+      install: true
       script: ./scripts/generateHTMLReport.sh -r ${S3_BUCKET}
