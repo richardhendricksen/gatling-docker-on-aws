@@ -23,3 +23,14 @@ jobs:
       language: java
       install: true
       script: ./scripts/generateHTMLReport.sh -r ${S3_BUCKET}
+      env:
+        - ARTIFACTS_KEY=$AWS_ACCESS_KEY_ID
+        - ARTIFACTS_SECRET=$AWS_SECRET_ACCESS_KEY
+        - ARTIFACTS_BUCKET=$S3_BUCKET
+      addons:
+        artifacts:
+          s3_region: $AWS_DEFAULT_REGION
+          paths:
+            - ./target/gatling/*
+          target_paths:
+            - /reports/
