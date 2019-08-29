@@ -35,7 +35,6 @@
             </activation>
             <properties>
                 <reportsOnly>${project.basedir}/target/gatling/</reportsOnly>
-
             </properties>
         </profile>
     </profiles>
@@ -148,6 +147,7 @@
                 <configuration>
                     <failOnError>true</failOnError>
                     <reportsOnly>${reportsOnly}</reportsOnly>
+                    <simulationClass>nl.codecontrol.gatling.simulations.BasicSimulation</simulationClass>
                     <jvmArgs>
                         <jvmArg>-Xss20M</jvmArg>
                     </jvmArgs>
