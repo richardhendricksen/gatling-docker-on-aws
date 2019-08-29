@@ -17,6 +17,6 @@ RUN mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.1:go-offline
 COPY src/ /build/src
 COPY bin/run.sh .
 
-RUN mvn install --offline
+RUN mvn -B install --offline
 
 ENTRYPOINT ["./run.sh"]
