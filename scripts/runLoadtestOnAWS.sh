@@ -3,14 +3,13 @@ set -e
 
 function help_text {
     cat <<EOF
-    Usage: $0 [ -r|--report-bucket string ] [ -c|--containers n ] [ -u|--users n ] [ -d|--duration m ] [ -ramp|--ramp-up s ] [ -cl|--ecs-cluster ] [ -p|--profile PROFILE ] [-h]
+    Usage: $0 [ -c|--containers n ] [ -u|--users n ] [ -d|--duration m ] [ -ramp|--ramp-up s ] [ -cl|--ecs-cluster ] [ -p|--profile PROFILE ] [-h]
 
-        -r, -report-bucket string           (required) Name of the S3 bucket to upload/download logs from and upload the reports to. Must be in same AWS account as profile.
-        -c, --containers n                  (required) Number of concurrent Docker containers
-        -u, --users n                       (required) Number of concurrent users
-        -d, --duration m                    (required) Max duration of loadtest in minutes
-        -ramp, --rampup s                   (required) Rampup time in seconds
-        -cl, --ecs-cluster string           (required) ECS Cluster to run on
+        -c, --containers n                  (required) Number of concurrent Docker containers.
+        -u, --users n                       (required) Number of users per Docker container.
+        -d, --duration m                    (required) Max duration of loadtest in minutes.
+        -ramp, --rampup s                   (required) Rampup time in seconds.
+        -cl, --ecs-cluster string           (required) ECS Cluster to run on.
         -p, --profile PROFILE               (optional) The profile to use from ~/.aws/credentials.
 EOF
     exit 1
@@ -24,10 +23,6 @@ while [ $# -gt 0 ]; do
         ;;
         -p|--profile)
             export AWS_DEFAULT_PROFILE="$2"
-            shift; shift
-        ;;
-        -r|--report-bucket)
-            export AWS_REPORT_BUCKET="$2"
             shift; shift
         ;;
         -c|--containers)
@@ -58,12 +53,6 @@ while [ $# -gt 0 ]; do
     esac
 done
 
-if [[ -z "$AWS_REPORT_BUCKET" ]]
-then
-    echo "Report bucket required."
-    help_text
-    exit 1
-fi
 if [[ -z "$DOCKER_NR_CONTAINERS" ]]
 then
     echo "Number of concurrent Docker containers required."
@@ -133,6 +122,3 @@ do
         exit 1
     fi
 done
-
-# Generate HTML report
-${DIR}/generateHTMLReport.sh -r ${AWS_REPORT_BUCKET}
