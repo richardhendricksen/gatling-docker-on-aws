@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 function help_text {
     cat <<EOF
     Usage: $0 [ -c|--clear-logs ] [ -p|--profile PROFILE ] [ -u|--upload-report ] [ -r|--report-bucket REPORT_BUCKET ] [-h]

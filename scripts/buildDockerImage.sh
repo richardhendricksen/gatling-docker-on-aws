@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -e
+
 function help_text {
     cat <<EOF
     Usage: $0 [ -i|--aws_account_id AWS_ACCOUNT_ID ] [ -r|--region ECR_REGION] [ -p|--profile PROFILE ] [-h]

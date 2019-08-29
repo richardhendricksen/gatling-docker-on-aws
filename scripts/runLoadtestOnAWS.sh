@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 function help_text {
     cat <<EOF
