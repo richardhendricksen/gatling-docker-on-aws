@@ -11,3 +11,4 @@ before_install:
   - pip install --user awscli
 script:
   - ./scripts/buildDockerImage.sh -i $AWS_ID -r $AWS_DEFAULT_REGION
+  - ./scripts/runLoadtestOnAWS.sh -r gatling-runner -c 1 -u 1 -d 1 -ramp 0 -cl gatlingCluster
