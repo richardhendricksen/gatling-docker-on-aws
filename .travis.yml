@@ -24,8 +24,9 @@ jobs:
       install: true
       script:
         - ./scripts/generateHTMLReport.sh -r ${S3_BUCKET}
-        - pwd
+        - cd target
         - ls -lah
+        - pwd
       env:
         - ARTIFACTS_KEY=$AWS_ACCESS_KEY_ID
         - ARTIFACTS_SECRET=$AWS_SECRET_ACCESS_KEY
@@ -34,6 +35,6 @@ jobs:
         artifacts:
           s3_region: $AWS_DEFAULT_REGION
           paths:
-            - $HOME/target/gatling/*
+            - target/gatling/*
           target_paths:
             - /reports/
