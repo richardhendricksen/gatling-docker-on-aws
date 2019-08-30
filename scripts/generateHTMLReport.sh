@@ -52,7 +52,7 @@ fi
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd ${DIR}/..
 
-FOLDER="simulation-$(date +"%Y-%m-%d_%H:%M:%S")"
+FOLDER="report"
 
 rm -f -r target/gatling/*
 ## Download all logs for all test gatling clients
