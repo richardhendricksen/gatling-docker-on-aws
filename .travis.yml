@@ -34,7 +34,8 @@ jobs:
       addons:
         artifacts:
           s3_region: $AWS_DEFAULT_REGION
+          permissions: public
           paths:
-            - target/gatling/*
+            - target/gatling/report/**/*
           target_paths:
             - /reports/
