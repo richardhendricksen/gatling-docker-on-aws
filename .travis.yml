@@ -24,7 +24,7 @@ jobs:
       install: true
       script:
         - ./scripts/generateHTMLReport.sh -r ${S3_BUCKET}
-        - cd target
+        - cd target/gatling
         - ls -lah
         - pwd
       env:
