@@ -36,6 +36,6 @@ jobs:
           s3_region: $AWS_DEFAULT_REGION
           permissions: public
           paths:
-            - target/gatling/report/**/*
+            - $(ls target/gatling/report/**/* | tr "\n" ":")
           target_paths:
             - /reports/
