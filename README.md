@@ -32,7 +32,7 @@ Since all steps use aws-cli or ecs-cli, make sure to setup your AWS env variable
 `./scripts/runLoadtestOnAWS.sh -r <S3_BUCKET> -c <NR_CONTAINERS> -u <NR_USERS_PER_CONTAINER> -d <DURATION_IN_MIN> -ramp <RAMPUP_TIME_IN_SEC> -cl <ECS_CLUSTER>`
 
 ### Creating HTML report
-`./consolidate_reports -r <S3_BUCKET>`
+`./scripts/generateHTMLReport.sh -r <S3_BUCKET>`
 
 ## Developing
 
