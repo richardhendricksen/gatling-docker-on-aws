@@ -11,7 +11,7 @@ Read more about it in my blog post [here](https://medium.com/@richard.hendrickse
 
 ### Install  
 * aws-cli. Install using `pip install awscli`  
-* ecs-cli. Download from [here](https://github.com/aws/amazon-ecs-cli#latest-version).  
+* ecs-cli. Download from [here](https://github.com/aws/amazon-ecs-cli#latest-version)  
 * Docker  
 
 ## Running  
