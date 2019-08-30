@@ -5,14 +5,14 @@ function help_text {
     cat <<EOF
     Usage: $0 [ -r|--report-bucket string ] [ -c|--containers n ] [ -u|--users n ] [ -d|--duration m ] [ -ramp|--ramp-up s ] [ -cl|--ecs-cluster ] [ -n|--name ] [-h]
 
-        -r, -report-bucket string           (required) Name of the S3 bucket to upload/download logs from and upload the reports to. Must be in same AWS account as profile.
-        -c, --containers n                  (required) Number of concurrent Docker containers.
-        -u, --users n                       (required) Number of concurrent users.
-        -d, --duration m                    (required) Max duration of loadtest in minutes.
-        -ramp, --rampup s                   (required) Rampup time in seconds.
-        -cl, --ecs-cluster string           (required) ECS Cluster to run on.
-        -n, --name {NAME}}                  (required) ECR repository name.
-        -p, --profile PROFILE               (optional) The profile to use from ~/.aws/credentials.
+        -r, -report-bucket AWS_REPORT_BUCKET   (required) Name of the S3 bucket to upload/download logs from and upload the reports to. Must be in same AWS account as profile.
+        -c, --containers DOCKER_NR_CONTAINERS  (required) Number of concurrent Docker containers.
+        -u, --users GATLING_NR_USERS           (required) Number of concurrent users.
+        -d, --duration GATLING_MAX_DURATION    (required) Max duration of loadtest in minutes.
+        -ramp, --rampup GATLING_RAMPUP_TIME    (required) Rampup time in seconds.
+        -cl, --ecs-cluster AWS_ECS_CLUSTER     (required) ECS Cluster to run on.
+        -n, --name ECR_REPOSITORY_NAME         (required) ECR repository name.
+        -p, --profile PROFILE                  (optional) The profile to use from ~/.aws/credentials.
 EOF
     exit 1
 }
