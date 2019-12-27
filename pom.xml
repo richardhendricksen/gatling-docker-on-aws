@@ -7,11 +7,11 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <scala.version>2.12.8</scala.version>
+        <scala.version>2.12.10</scala.version>
         <encoding>UTF-8</encoding>
-        <gatling.version>3.0.3</gatling.version>
-        <scala-maven-plugin.version>3.3.1</scala-maven-plugin.version>
-        <gatling-maven-plugin.version>3.0.1</gatling-maven-plugin.version>
+        <gatling.version>3.3.1</gatling.version>
+        <scala-maven-plugin.version>4.3.0</scala-maven-plugin.version>
+        <gatling-maven-plugin.version>3.0.5</gatling-maven-plugin.version>
     </properties>
 
     <profiles>
@@ -47,33 +47,45 @@
                 <version>${gatling.version}</version>
                 <scope>test</scope>
             </dependency>
+
             <dependency>
                 <groupId>io.gatling</groupId>
                 <artifactId>gatling-recorder</artifactId>
                 <version>${gatling.version}</version>
                 <scope>test</scope>
             </dependency>
+
             <dependency>
                 <groupId>io.gatling</groupId>
                 <artifactId>gatling-compiler</artifactId>
                 <version>${gatling.version}</version>
                 <scope>test</scope>
             </dependency>
+
             <dependency>
                 <groupId>io.gatling.highcharts</groupId>
                 <artifactId>gatling-charts-highcharts</artifactId>
                 <version>${gatling.version}</version>
                 <scope>test</scope>
             </dependency>
+
             <dependency>
                 <groupId>org.scala-lang</groupId>
                 <artifactId>scala-library</artifactId>
                 <version>${scala.version}</version>
                 <scope>test</scope>
             </dependency>
+
             <dependency>
                 <groupId>org.scala-lang</groupId>
                 <artifactId>scala-compiler</artifactId>
+                <version>${scala.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-reflect</artifactId>
                 <version>${scala.version}</version>
                 <scope>test</scope>
             </dependency>
@@ -85,30 +97,41 @@
             <groupId>io.gatling.highcharts</groupId>
             <artifactId>gatling-charts-highcharts</artifactId>
         </dependency>
+
         <dependency>
             <groupId>io.gatling</groupId>
             <artifactId>gatling-app</artifactId>
         </dependency>
+
         <dependency>
             <groupId>io.gatling</groupId>
             <artifactId>gatling-recorder</artifactId>
         </dependency>
+
         <dependency>
             <groupId>io.gatling</groupId>
             <artifactId>gatling-compiler</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-compiler</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-reflect</artifactId>
         </dependency>
     </dependencies>
 
     <build>
         <testSourceDirectory>src/test/scala</testSourceDirectory>
+
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -118,10 +141,18 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+            </plugin>
+
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
+                <version>${scala-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -140,6 +171,7 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>io.gatling</groupId>
                 <artifactId>gatling-maven-plugin</artifactId>
