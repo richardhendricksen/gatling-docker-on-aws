@@ -71,14 +71,20 @@ VPC_ID=$(aws ec2 describe-vpcs --filters Name=tag:aws:cloudformation:stack-name,
 export VPC_ID
 
 SubnetIds=$(aws ec2 describe-subnets --filters Name=vpc-id,Values=${VPC_ID} --output text --query Subnets[*].SubnetId)
-SubnetArray=("${SubnetIds//' '/}")
+SubnetArray=(${SubnetIds//' '/})
 export subnet_1=${SubnetArray[0]}
 export subnet_2=${SubnetArray[1]}
 
 security_group=$(aws ec2 describe-security-groups --filters Name=vpc-id,Values=${VPC_ID} --output text --query SecurityGroups[0].GroupId)
 export security_group
 
+# create ecs-params.yml
+touch ecs-params.yml
+
 # Templates our ecs-params.yml file with our current values
 envsubst < ecs-params.yml.template >ecs-params.yml
+
+echo "Printing ecs-params.yml file"
+cat ecs-params.yml
 
 echo "Cluster creation script execution successful."
