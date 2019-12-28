@@ -67,7 +67,11 @@ Optionally, you can choose to de-register task definitions and delete log group 
 `mvn clean gatling:test`  
 
 ### Creating docker image locally
-`docker build -t gatling-runner .`     
+Use default time zone:
+`docker build -t gatling-runner .` 
+
+Set local time zone:
+`docker build --build-arg TIME_ZONE="$(curl -s https://ipapi.co/timezone)" -t gatling-runner .`    
 
 ### Run docker image locally
 Use docker volume to add your AWS credentials that has permission to write to the S3 bucket. You can also optionally provide the AWS profile:  

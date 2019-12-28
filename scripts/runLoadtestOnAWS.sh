@@ -80,7 +80,8 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd ${DIR}/..
 
 # Get AWS account id
-export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
+AWS_ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
+export AWS_ACCOUNT_ID
 
 ## Sets the region environment variable in the docker-compose.yml file
 echo "ECR and container log region: ${AWS_REGION}"

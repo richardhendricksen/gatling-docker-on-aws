@@ -48,7 +48,7 @@ fi
 until [[ $(aws ecs list-tasks --cluster ${AWS_ECS_CLUSTER} --region ${AWS_REGION} --output text --query "taskArns") == "" ]]
 do
     echo "There are still tasks running on cluster, stopping next task..."
-    aws ecs stop-task --cluster ${AWS_ECS_CLUSTER} --region ${AWS_REGION} --task $(aws ecs list-tasks --cluster ${AWS_ECS_CLUSTER} --region ${AWS_REGION} --output text --query "taskArns[0]")
+    aws ecs stop-task --cluster ${AWS_ECS_CLUSTER} --region ${AWS_REGION} --task "$(aws ecs list-tasks --cluster ${AWS_ECS_CLUSTER} --region ${AWS_REGION} --output text --query "taskArns[0]")"
 done
 
 echo "No tasks (left) running on cluster, done..."

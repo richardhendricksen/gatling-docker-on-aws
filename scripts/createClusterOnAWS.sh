@@ -67,14 +67,16 @@ ecs-cli up
 
 echo "Saving VPC_ID, SubnetIds and SecurityGroup as environment variables"
 
-export VPC_ID=$(aws ec2 describe-vpcs --filters Name=tag:aws:cloudformation:stack-name,Values=amazon-ecs-cli-setup-${ECS_CLUSTER_NAME} --output text --query Vpcs[0].VpcId)
+VPC_ID=$(aws ec2 describe-vpcs --filters Name=tag:aws:cloudformation:stack-name,Values=amazon-ecs-cli-setup-${ECS_CLUSTER_NAME} --output text --query Vpcs[0].VpcId)
+export VPC_ID
 
 SubnetIds=$(aws ec2 describe-subnets --filters Name=vpc-id,Values=${VPC_ID} --output text --query Subnets[*].SubnetId)
-SubnetArray=(${SubnetIds//' '/})
-
+SubnetArray=("${SubnetIds//' '/}")
 export subnet_1=${SubnetArray[0]}
 export subnet_2=${SubnetArray[1]}
-export security_group=$(aws ec2 describe-security-groups --filters Name=vpc-id,Values=${VPC_ID} --output text --query SecurityGroups[0].GroupId)
+
+security_group=$(aws ec2 describe-security-groups --filters Name=vpc-id,Values=${VPC_ID} --output text --query SecurityGroups[0].GroupId)
+export security_group
 
 # Templates our ecs-params.yml file with our current values
 envsubst < ecs-params.yml.template >ecs-params.yml

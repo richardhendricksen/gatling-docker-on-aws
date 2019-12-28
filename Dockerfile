@@ -2,9 +2,11 @@ FROM maven:3.6.1-jdk-8-alpine
 
 LABEL maintainer="Richard Hendricksen <richard.hendricksen@codecontrol.nl>"
 
+ARG TIME_ZONE=Europe/Amsterdam
+
 RUN apk add -Uuv python less py-pip openssl tzdata
 RUN pip install awscli
-RUN cp /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
+RUN cp /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime
 
 RUN apk --purge -v del py-pip && \
     rm /var/cache/apk/*

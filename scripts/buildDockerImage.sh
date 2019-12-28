@@ -53,7 +53,7 @@ cd ${DIR}/..
 AWS_ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
 
 # Create docker image
-docker build -t ${IMAGE_NAME} .
+docker build --build-arg TIME_ZONE="$(curl -s https://ipapi.co/timezone)" -t ${IMAGE_NAME} .
 
 # Push docker image to AWS:
 $(aws ecr get-login --no-include-email)
