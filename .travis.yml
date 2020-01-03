@@ -18,7 +18,7 @@ jobs:
     - stage: Build docker image
       script: ./scripts/buildDockerImage.sh -n $IMAGE_NAME -r $AWS_DEFAULT_REGION
     - stage: Execute Gatling test
-      script: ./scripts/runLoadtestOnAWS.sh -r ${S3_BUCKET} -c 2 -u 10 -d 1 -ramp 10 -cl $ECS_CLUSTER
+      script: ./scripts/runLoadtestOnAWS.sh -r ${S3_BUCKET} -c 2 -u 10 -d 1 -ramp 10 -cl $ECS_CLUSTER -rgn $AWS_DEFAULT_REGION -n $IMAGE_NAME
     - stage: Generate report
       language: java
       install: true

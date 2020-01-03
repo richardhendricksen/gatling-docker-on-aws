@@ -5,7 +5,7 @@ function help_text {
     cat <<EOF
     Usage: $0 [ -cln|--cluster-name ECS_CLUSTER_NAME ] [ -con|--config-name ECS_CONFIG_NAME ] [ -r|--region AWS_REGION ] [ -p|--profile AWS_DEFAULT_PROFILE ] [-h]
 
-        --name ECS_CLUSTER_NAME             (required) ECS cluster name.
+        --cluster-name ECS_CLUSTER_NAME             (required) ECS cluster name.
         --config-name ECS_CONFIG_NAME       (required) ECS config name.
         --region AWS_REGION                 (required) AWS region.
         --profile AWS_DEFAULT_PROFILE       (optional) The profile to use from ~/.aws/credentials.
@@ -63,19 +63,19 @@ cd ${DIR}/..
 ecs-cli configure --cluster ${ECS_CLUSTER_NAME} --region ${AWS_REGION} --default-launch-type FARGATE --config-name ${ECS_CONFIG_NAME}
 
 # Start cluster
-ecs-cli up
+ecs-cli up --cluster-config ${ECS_CONFIG_NAME}
 
 echo "Saving VPC_ID, SubnetIds and SecurityGroup as environment variables"
 
-VPC_ID=$(aws ec2 describe-vpcs --filters Name=tag:aws:cloudformation:stack-name,Values=amazon-ecs-cli-setup-${ECS_CLUSTER_NAME} --output text --query Vpcs[0].VpcId)
+VPC_ID=$(aws ec2 describe-vpcs --filters "Name=tag:aws:cloudformation:stack-name,Values=amazon-ecs-cli-setup-${ECS_CLUSTER_NAME}" --output text --query "Vpcs[0].VpcId")
 export VPC_ID
 
-SubnetIds=$(aws ec2 describe-subnets --filters Name=vpc-id,Values=${VPC_ID} --output text --query Subnets[*].SubnetId)
+SubnetIds=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=${VPC_ID}" --output text --query "Subnets[*].SubnetId")
 SubnetArray=(${SubnetIds//' '/})
 export subnet_1=${SubnetArray[0]}
 export subnet_2=${SubnetArray[1]}
 
-security_group=$(aws ec2 describe-security-groups --filters Name=vpc-id,Values=${VPC_ID} --output text --query SecurityGroups[0].GroupId)
+security_group=$(aws ec2 describe-security-groups --filters "Name=vpc-id,Values=${VPC_ID}" --output text --query "SecurityGroups[0].GroupId")
 export security_group
 
 # create ecs-params.yml
