@@ -2,17 +2,19 @@ package nl.codecontrol.gatling.config
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
+import io.gatling.http.protocol.HttpProtocolBuilder
+
 import scala.concurrent.duration._
 
 object Config {
   // params
-  val baseUrl = sys.env.getOrElse("GATLING_BASEURL", "http://computer-database.gatling.io").toString
-  val cookieDomain = sys.env.getOrElse("GATLING_COOKIEDOMAIN", "computer-database.gatling.io/computers").toString
-  val users = sys.env.getOrElse("GATLING_NR_USERS", "1").toInt
+  val baseUrl: String = sys.env.getOrElse("GATLING_BASEURL", "http://computer-database.gatling.io").toString
+  val cookieDomain: String = sys.env.getOrElse("GATLING_COOKIEDOMAIN", "computer-database.gatling.io/computers").toString
+  val users: Int = sys.env.getOrElse("GATLING_NR_USERS", "1").toInt
   val maxDuration: FiniteDuration = sys.env.getOrElse("GATLING_MAX_DURATION", "2").toInt minutes
   val rampUpTime: FiniteDuration = sys.env.getOrElse("GATLING_RAMPUP_TIME", "10").toInt seconds
 
-  val httpProtocol = http
+  val httpProtocol: HttpProtocolBuilder = http
     .baseUrl(baseUrl)
     .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
     .doNotTrackHeader("1")

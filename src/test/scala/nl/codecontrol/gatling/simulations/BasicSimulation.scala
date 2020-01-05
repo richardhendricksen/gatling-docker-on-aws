@@ -9,11 +9,11 @@ import scala.language.postfixOps
 class BasicSimulation extends Simulation {
 
   println("Configuration:")
-  println(s"BaseURL: ${baseUrl}")
-  println(s"CookieDomain: ${cookieDomain}")
-  println(s"Nr concurrent users: ${users}")
-  println(s"Max duration: ${maxDuration}")
-  println(s"RampUp time: ${rampUpTime}")
+  println("BaseURL: " + baseUrl)
+  println("CookieDomain: " + cookieDomain)
+  println("Nr concurrent users: " + users)
+  println("Max duration: " + maxDuration)
+  println("RampUp time: " + rampUpTime)
 
   setUp(
     basicScenario.inject(rampUsers(users) during rampUpTime)).maxDuration(maxDuration).protocols(httpProtocol)

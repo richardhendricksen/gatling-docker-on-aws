@@ -3,9 +3,11 @@ set -e
 
 function help_text {
     cat <<EOF
-    Usage: $0 [ -n|--name ECR_REPOSITORY_NAME] [-h]
+    Usage: $0 [ -n|--name IMAGE_NAME ] [ -r|--region AWS_REGION ] [ -p|--profile AWS_DEFAULT_PROFILE ] [-h]
 
-        --name ECR_REPOSITORY_NAME        (required) ECR repository name.
+        --name IMAGE_NAME                   (required) Image name.
+        --region AWS_REGION                 (required) AWS region.
+        --profile AWS_DEFAULT_PROFILE       (optional) The profile to use from ~/.aws/credentials.
 EOF
     exit 1
 }
@@ -17,7 +19,15 @@ while [ $# -gt 0 ]; do
             help_text
         ;;
         -n|--name)
-            export ECR_REPOSITORY_NAME="$2"
+            export IMAGE_NAME="$2"
+            shift; shift
+        ;;
+        -r|--region)
+            export AWS_REGION="$2"
+            shift; shift;
+        ;;
+        -p|--profile)
+            export AWS_DEFAULT_PROFILE="$2"
             shift; shift
         ;;
         *)
@@ -28,7 +38,7 @@ while [ $# -gt 0 ]; do
     esac
 done
 
-if [[ -z $ECR_REPOSITORY_NAME ]]
+if [[ -z $IMAGE_NAME || -z $AWS_REGION ]]
 then
     echo "Missing arguments."
     help_text
@@ -43,10 +53,10 @@ cd ${DIR}/..
 AWS_ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
 
 # Create docker image
-docker build -t gatling-runner .
+docker build --build-arg TIME_ZONE="$(curl -s https://ipapi.co/timezone)" -t ${IMAGE_NAME} .
 
 # Push docker image to AWS:
 $(aws ecr get-login --no-include-email)
-docker tag gatling-runner ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}
-docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}
-docker logout ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}
+docker tag ${IMAGE_NAME} ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${IMAGE_NAME}
+docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${IMAGE_NAME}
+docker logout ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${IMAGE_NAME}
