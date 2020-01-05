@@ -17,13 +17,12 @@ jobs:
   include:
     - stage: Build docker image
       script: ./scripts/buildDockerImage.sh -n $IMAGE_NAME -r $AWS_DEFAULT_REGION
-    - stage: Create ECS Fargate Cluster
-      script: ./scripts/createClusterOnAWS.sh --cluster-name $ECS_CLUSTER --config-name $ECS_CLUSTER  --region $AWS_DEFAULT_REGION
-    - stage: Execute Gatling test
-      script: ./scripts/runLoadtestOnAWS.sh -r $S3_BUCKET -c 2 -u 10 -d 1 -ramp 10 -cl $ECS_CLUSTER -rgn $AWS_DEFAULT_REGION -n $IMAGE_NAME
+    - stage: Create ECS Fargate Cluster && Execute Gatling test && Delete ECS Fargate Cluster
+      script:
+        - ./scripts/createClusterOnAWS.sh --cluster-name $ECS_CLUSTER --config-name $ECS_CLUSTER  --region $AWS_DEFAULT_REGION
+        - ./scripts/runLoadtestOnAWS.sh -r $S3_BUCKET -c 2 -u 10 -d 1 -ramp 10 -cl $ECS_CLUSTER -rgn $AWS_DEFAULT_REGION -n $IMAGE_NAME
+        - ./scripts/deleteClusterOnAWS.sh -cln $ECS_CLUSTER --region $AWS_DEFAULT_REGION --log-group /ecs/gatling-runner
     - stage: Generate report
       language: java
       install: true
       script: ./scripts/generateHTMLReport.sh -r $S3_BUCKET
-    - stage: Delete ECS Fargate Cluster
-      scripts: ./scripts/deleteClusterOnAWS.sh -cln $ECS_CLUSTER --region $AWS_DEFAULT_REGION --log-group /ecs/gatling-runner
