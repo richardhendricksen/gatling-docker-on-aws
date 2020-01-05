@@ -7,7 +7,7 @@ function help_text {
 
         --name ECS_CLUSTER_NAME                               (required) ECS cluster name.
         --region AWS_REGION                                   (required) AWS region.
-        --task-definition-family TASK_DEFINITION_FAMILY         (optional) task definition family for de-registering active definitions
+        --task-definition-family TASK_DEFINITION_FAMILY       (optional) task definition family for de-registering active definitions
         --log-group LOG_GROUP                                 (optional) CloudWatch log group for deleting logs
         --profile AWS_DEFAULT_PROFILE                         (optional) The profile to use from ~/.aws/credentials.
 EOF

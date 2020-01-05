@@ -5,13 +5,13 @@ function help_text {
     cat <<EOF
     Usage: $0 [ -r|--report-bucket AWS_REPORT_BUCKET ] [ -rgn|--region AWS_REGION ] [ -c|--containers DOCKER_NR_CONTAINERS ] [ -u|--users GATLING_NR_USERS ] [ -d|--duration GATLING_MAX_DURATION ] [ -ramp|--ramp-up GATLING_RAMPUP_TIME ] [ -cl|--ecs-cluster AWS_ECS_CLUSTER ] [ -n|--name IMAGE_NAME ] [ -p|--profile AWS_DEFAULT_PROFILE ] [-h]
 
-        -r, -report-bucket AWS_REPORT_BUCKET   (required) Name of the S3 bucket to upload/download logs from and upload the reports to. Must be in same AWS account as profile.
+        -r, -report-bucket AWS_REPORT_BUCKET    (required) Name of the S3 bucket to upload/download logs from and upload the reports to. Must be in same AWS account as profile.
         -rgn, --region AWS_REGION               (required) ECR and container log region
-        -c, --containers DOCKER_NR_CONTAINERS  (required) Number of concurrent Docker containers.
-        -u, --users GATLING_NR_USERS           (required) Number of concurrent users.
-        -d, --duration GATLING_MAX_DURATION    (required) Max duration of loadtest in minutes.
+        -c, --containers DOCKER_NR_CONTAINERS   (required) Number of concurrent Docker containers.
+        -u, --users GATLING_NR_USERS            (required) Number of concurrent users.
+        -d, --duration GATLING_MAX_DURATION     (required) Max duration of loadtest in minutes.
         -ramp, --ramp-up GATLING_RAMPUP_TIME    (required) Ramp-up time in seconds.
-        -cl, --ecs-cluster AWS_ECS_CLUSTER     (required) ECS Cluster to run on.
+        -cl, --ecs-cluster AWS_ECS_CLUSTER      (required) ECS Cluster to run on.
         -n, --name IMAGE_NAME                   (required) Docker image name.
         -p, --profile AWS_DEFAULT_PROFILE       (optional) The profile to use from ~/.aws/credentials.
 EOF

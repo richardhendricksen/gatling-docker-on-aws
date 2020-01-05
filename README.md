@@ -42,24 +42,24 @@ and [Jenkins](https://github.com/richardhendricksen/gatling-docker-on-aws/blob/m
 `sh scripts/createClusterOnAWS.sh --cluster-name <ECS_CLUSTER_NAME> --config-name <ECS_CONFIG_NAME> --region <AWS_REGION>`
 
 ### Running load test on AWS
-`sh scripts/runLoadtestOnAWS.sh -r <S3_BUCKET> -c <NR_CONTAINERS> -u <NR_USERS_PER_CONTAINER> -d <DURATION_IN_MIN> -ramp <RAMPUP_TIME_IN_SEC> -cl <ECS_CLUSTER>`
+`sh scripts/runLoadtestOnAWS.sh --report-bucket <S3_BUCKET> --containers <NR_CONTAINERS> --users <NR_USERS_PER_CONTAINER> --duration <DURATION_IN_MIN> --ramp-up <RAMPUP_TIME_IN_SEC> --ecs-cluster <ECS_CLUSTER> --region <AWS_REGION> --name <DOCKER_IMAGE>`
 
 ### Stop tasks (if necessary)
 `sh scripts/stopAllTasksOnCluster.sh --ecs-cluster <ECS_CLUSTER_NAME> --region <AWS_REGION>`
 
 ### Creating HTML report
 Generate final HTML report:
-`sh scripts/generateHTMLReport.sh --report-bucket na-gatling-results`
+`sh scripts/generateHTMLReport.sh --report-bucket <S3_BUCKET>`
 
 Optionally, you can choose to delete the simulation logs and upload the final HTML report to the S3 bucket in addition to generating the final report.
 `sh scripts/generateHTMLReport.sh --report-bucket na-gatling-results --clear-logs true --upload-report true`
 
 ### Delete ECS Fargate cluster
-To just delete the cluster:
+To delete the cluster:
 `sh scripts/deleteClusterOnAWS.sh --cluster-name <ECS_CLUSTER_NAME> --region <AWS_REGION>`
 
 Optionally, you can choose to de-register task definitions and delete log group in addition to deleting cluster
-`sh scripts/deleteClusterOnAWS.sh --cluster-name gatlingCluster --region us-west-2 --task-definition-family ${PWD##*/} --log-group /ecs/gatling-runner`
+`sh scripts/deleteClusterOnAWS.sh --cluster-name <ECS_CLUSTER_NAME> --region <AWS_REGION> --task-definition-family <TASK_DEFINITION> --log-group <LOG_GROUP>`
 
 ## Developing
 

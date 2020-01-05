@@ -5,7 +5,7 @@ function help_text {
     cat <<EOF
     Usage: $0 [ -cln|--cluster-name ECS_CLUSTER_NAME ] [ -con|--config-name ECS_CONFIG_NAME ] [ -r|--region AWS_REGION ] [ -p|--profile AWS_DEFAULT_PROFILE ] [-h]
 
-        --cluster-name ECS_CLUSTER_NAME             (required) ECS cluster name.
+        --cluster-name ECS_CLUSTER_NAME     (required) ECS cluster name.
         --config-name ECS_CONFIG_NAME       (required) ECS config name.
         --region AWS_REGION                 (required) AWS region.
         --profile AWS_DEFAULT_PROFILE       (optional) The profile to use from ~/.aws/credentials.
