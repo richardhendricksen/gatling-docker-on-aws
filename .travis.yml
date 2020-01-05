@@ -26,4 +26,4 @@ jobs:
       install: true
       script: ./scripts/generateHTMLReport.sh -r $S3_BUCKET
     - stage: Delete ECS Fargate Cluster
-      scripts: ./scripts/deleteClusterOnAWS.sh -cln $ECS_CLUSTER --region $AWS_DEFAULT_REGION
+      scripts: ./scripts/deleteClusterOnAWS.sh -cln $ECS_CLUSTER --region $AWS_DEFAULT_REGION --log-group /etc/gatling-runner
