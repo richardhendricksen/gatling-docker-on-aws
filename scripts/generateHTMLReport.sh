@@ -3,12 +3,12 @@ set -e
 
 function help_text {
     cat <<EOF
-    Usage: $0 [ -c|--clear-logs CLEAR_LOGS ] [ -u|--upload-report UPLOAD_REPORT ] [ -r|--report-bucket REPORT_BUCKET ] [ -p|--profile AWS_DEFAULT_PROFILE ] [-h]
+    Usage: $0 [ -c|--clear-logs CLEAR_LOGS ] [ -u|--upload-report UPLOAD_REPORT ] [ -r|--report-bucket REPORT_BUCKET ] [ -p|--profile AWS_PROFILE ] [-h]
 
         --clear-logs                            (optional) Clear the log folder in the S3 bucket after creating the report.
         --upload-report                         (optional) Upload HTML report to S3 bucket.
         --report-bucket REPORT_BUCKET           (required) name of the S3 bucket to download logs from and upload the reports to.
-        -p, --profile AWS_DEFAULT_PROFILE       (optional) The profile to use from ~/.aws/credentials.
+        --profile AWS_PROFILE                   (optional) The profile to use from ~/.aws/credentials.
 EOF
     exit 1
 }

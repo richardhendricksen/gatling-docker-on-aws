@@ -3,15 +3,19 @@ set -e
 
 function help_text {
     cat <<EOF
-    Usage: $0 [ -cln|--cluster-name ECS_CLUSTER_NAME ] [ -r|--region AWS_REGION ] [ -tdf|--task-definition-family TASK_DEFINITION_FAMILY ] [ -lg|--log-group LOG_GROUP ] [-h]
+    Usage: $0 [ -cln|--cluster-name ECS_CLUSTER_NAME ] [ -r|--region AWS_REGION ] [ -tdf|--task-definition-family TASK_DEFINITION_FAMILY ] [ -lg|--log-group LOG_GROUP ] [ -p|--profile AWS_PROFILE] [-h]
 
-        --name ECS_CLUSTER_NAME                               (required) ECS cluster name.
+        --cluster-name ECS_CLUSTER_NAME                       (required) ECS cluster name.
         --region AWS_REGION                                   (required) AWS region.
         --task-definition-family TASK_DEFINITION_FAMILY       (optional) task definition family for de-registering active definitions
         --log-group LOG_GROUP                                 (optional) CloudWatch log group for deleting logs
+        --profile AWS_PROFILE                                 (optional) AWS profile used, default if omitted.
+
 EOF
     exit 1
 }
+
+ECS_PROFILE=""
 
 while [ $# -gt 0 ]; do
     arg=$1
@@ -35,6 +39,11 @@ while [ $# -gt 0 ]; do
             LOG_GROUP="$2"
             shift; shift;
         ;;
+        -p|--profile)
+            export AWS_DEFAULT_PROFILE="$2"
+            ECS_PROFILE="--aws-profile $2"
+            shift; shift;
+        ;;
         *)
             echo "ERROR: Unrecognised option: ${arg}"
             help_text
@@ -55,7 +64,7 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd ${DIR}/..
 
 ## Deletes created cluster
-ecs-cli down --force --cluster ${ECS_CLUSTER_NAME} --region ${AWS_REGION}
+ecs-cli down --force --cluster ${ECS_CLUSTER_NAME} --region ${AWS_REGION} ${ECS_PROFILE}
 echo "Cluster and it's resources successfully deleted."
 
 if [[ -n $TASK_DEFINITION_FAMILY ]]

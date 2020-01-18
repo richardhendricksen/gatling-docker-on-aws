@@ -18,6 +18,8 @@ EOF
     exit 1
 }
 
+ECS_PROFILE=""
+
 while [ $# -gt 0 ]; do
     arg=$1
     case $arg in
@@ -58,6 +60,7 @@ while [ $# -gt 0 ]; do
         ;;
         -p|--profile)
             export AWS_DEFAULT_PROFILE="$2"
+            ECS_PROFILE="--aws-profile $2"
             shift; shift;
         ;;
         *)
@@ -87,7 +90,7 @@ export AWS_ACCOUNT_ID
 echo "ECR and container log region: ${AWS_REGION}"
 
 # Check no tasks are running on cluster
-RUNNING_TASKS=$(ecs-cli ps --cluster ${AWS_ECS_CLUSTER} --desired-status RUNNING)
+RUNNING_TASKS=$(ecs-cli ps --cluster ${AWS_ECS_CLUSTER} --desired-status RUNNING ${ECS_PROFILE})
 if [[ ${RUNNING_TASKS} != "" ]]
 then
     echo "There are still tasks running on cluster, load test aborted:"
@@ -100,15 +103,15 @@ echo "Removing existing log files from S3 bucket"
 aws s3 rm s3://${AWS_REPORT_BUCKET}/logs --recursive
 
 # Creates a task definition. Also creates a log group if one doesn't already exist.
-ecs-cli compose create --create-log-groups
+ecs-cli compose create --create-log-groups ${ECS_PROFILE}
 
 # Start all containers
 echo "Running loadtest with ${DOCKER_NR_CONTAINERS} containers with ${GATLING_NR_USERS} users each"
 echo "For a total of $(($DOCKER_NR_CONTAINERS * $GATLING_NR_USERS)) concurrent users"
-ecs-cli compose scale ${DOCKER_NR_CONTAINERS} --cluster ${AWS_ECS_CLUSTER} --launch-type FARGATE
+ecs-cli compose scale ${DOCKER_NR_CONTAINERS} --cluster ${AWS_ECS_CLUSTER} --launch-type FARGATE ${ECS_PROFILE}
 
 # Wait until all containers are stopped
-until [[ $(ecs-cli ps --cluster ${AWS_ECS_CLUSTER} --desired-status RUNNING) == "" ]]
+until [[ $(ecs-cli ps --cluster ${AWS_ECS_CLUSTER} --desired-status RUNNING ${ECS_PROFILE}) == "" ]]
 do
     echo "Tasks are running on cluster..."
     sleep 60s

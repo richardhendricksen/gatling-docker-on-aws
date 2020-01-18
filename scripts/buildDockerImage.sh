@@ -3,11 +3,11 @@ set -e
 
 function help_text {
     cat <<EOF
-    Usage: $0 [ -n|--name IMAGE_NAME ] [ -r|--region AWS_REGION ] [ -p|--profile AWS_DEFAULT_PROFILE ] [-h]
+    Usage: $0 [ -n|--name IMAGE_NAME ] [ -r|--region AWS_REGION ] [ -p|--profile AWS_PROFILE ] [-h]
 
         --name IMAGE_NAME                   (required) Image name.
         --region AWS_REGION                 (required) AWS region.
-        --profile AWS_DEFAULT_PROFILE       (optional) The profile to use from ~/.aws/credentials.
+        --profile AWS_PROFILE               (optional) The profile to use from ~/.aws/credentials.
 EOF
     exit 1
 }

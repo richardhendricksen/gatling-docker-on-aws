@@ -3,11 +3,12 @@ set -e
 
 function help_text {
     cat <<EOF
-    Usage: $0 [ -cln|--cluster-name ECS_CLUSTER_NAME ] [ -con|--config-name ECS_CONFIG_NAME ] [ -r|--region AWS_REGION ] [-h]
+    Usage: $0 [ -cln|--cluster-name ECS_CLUSTER_NAME ] [ -con|--config-name ECS_CONFIG_NAME ] [ -r|--region AWS_REGION ] [ -p|--profile AWS_PROFILE] [-h]
 
         --cluster-name ECS_CLUSTER_NAME     (required) ECS cluster name.
         --config-name ECS_CONFIG_NAME       (required) ECS config name.
         --region AWS_REGION                 (required) AWS region.
+        --profile AWS_PROFILE               (optional) AWS profile used, default if omitted.
 
     Note: envsubst utility is not availabe on MacOS by default. You can install it via Homebrew. To install:
 
@@ -16,6 +17,8 @@ function help_text {
 EOF
     exit 1
 }
+
+ECS_PROFILE=""
 
 while [ $# -gt 0 ]; do
     arg=$1
@@ -33,6 +36,11 @@ while [ $# -gt 0 ]; do
         ;;
         -r|--region)
             AWS_REGION="$2"
+            shift; shift;
+        ;;
+        -p|--profile)
+            export AWS_DEFAULT_PROFILE="$2"
+            ECS_PROFILE="--aws-profile $2"
             shift; shift;
         ;;
         *)
@@ -58,12 +66,11 @@ cd ${DIR}/..
 ecs-cli configure --cluster ${ECS_CLUSTER_NAME} --region ${AWS_REGION} --default-launch-type FARGATE --config-name ${ECS_CONFIG_NAME}
 
 # Start cluster
-ecs-cli up --cluster-config ${ECS_CONFIG_NAME}
+ecs-cli up --cluster-config ${ECS_CONFIG_NAME} ${ECS_PROFILE}
 
 echo "Saving VPC_ID, SubnetIds and SecurityGroup as environment variables"
 
 VPC_ID=$(aws ec2 describe-vpcs --filters "Name=tag:aws:cloudformation:stack-name,Values=amazon-ecs-cli-setup-${ECS_CLUSTER_NAME}" --output text --query "Vpcs[0].VpcId")
-export VPC_ID
 
 SubnetIds=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=${VPC_ID}" --output text --query "Subnets[*].SubnetId")
 SubnetArray=(${SubnetIds//' '/})
