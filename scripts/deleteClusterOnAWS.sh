@@ -3,13 +3,12 @@ set -e
 
 function help_text {
     cat <<EOF
-    Usage: $0 [ -cln|--cluster-name ECS_CLUSTER_NAME ] [ -r|--region AWS_REGION ] [ -tdf|--task-definition-family TASK_DEFINITION_FAMILY ] [ -lg|--log-group LOG_GROUP ] [ -p|--profile AWS_DEFAULT_PROFILE ] [-h]
+    Usage: $0 [ -cln|--cluster-name ECS_CLUSTER_NAME ] [ -r|--region AWS_REGION ] [ -tdf|--task-definition-family TASK_DEFINITION_FAMILY ] [ -lg|--log-group LOG_GROUP ] [-h]
 
         --name ECS_CLUSTER_NAME                               (required) ECS cluster name.
         --region AWS_REGION                                   (required) AWS region.
         --task-definition-family TASK_DEFINITION_FAMILY       (optional) task definition family for de-registering active definitions
         --log-group LOG_GROUP                                 (optional) CloudWatch log group for deleting logs
-        --profile AWS_DEFAULT_PROFILE                         (optional) The profile to use from ~/.aws/credentials.
 EOF
     exit 1
 }
@@ -35,10 +34,6 @@ while [ $# -gt 0 ]; do
         -lg|--log-group)
             LOG_GROUP="$2"
             shift; shift;
-        ;;
-        -p|--profile)
-            export AWS_DEFAULT_PROFILE="$2"
-            shift; shift
         ;;
         *)
             echo "ERROR: Unrecognised option: ${arg}"

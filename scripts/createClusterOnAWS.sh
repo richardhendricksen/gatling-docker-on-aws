@@ -3,12 +3,11 @@ set -e
 
 function help_text {
     cat <<EOF
-    Usage: $0 [ -cln|--cluster-name ECS_CLUSTER_NAME ] [ -con|--config-name ECS_CONFIG_NAME ] [ -r|--region AWS_REGION ] [ -p|--profile AWS_DEFAULT_PROFILE ] [-h]
+    Usage: $0 [ -cln|--cluster-name ECS_CLUSTER_NAME ] [ -con|--config-name ECS_CONFIG_NAME ] [ -r|--region AWS_REGION ] [-h]
 
         --cluster-name ECS_CLUSTER_NAME     (required) ECS cluster name.
         --config-name ECS_CONFIG_NAME       (required) ECS config name.
         --region AWS_REGION                 (required) AWS region.
-        --profile AWS_DEFAULT_PROFILE       (optional) The profile to use from ~/.aws/credentials.
 
     Note: envsubst utility is not availabe on MacOS by default. You can install it via Homebrew. To install:
 
@@ -35,10 +34,6 @@ while [ $# -gt 0 ]; do
         -r|--region)
             AWS_REGION="$2"
             shift; shift;
-        ;;
-        -p|--profile)
-            export AWS_DEFAULT_PROFILE="$2"
-            shift; shift
         ;;
         *)
             echo "ERROR: Unrecognised option: ${arg}"
