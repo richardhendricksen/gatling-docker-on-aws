@@ -37,3 +37,6 @@ out/
 
 # AWS
 ecs-params.yml
+
+# Test
+./gatling-runner/results
