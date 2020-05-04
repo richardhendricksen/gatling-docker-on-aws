@@ -3,7 +3,7 @@ set -e
 
 function help_text {
     cat <<EOF
-    Usage: $0 [ -c|--clear-logs CLEAR_LOGS ] [ -u|--upload-report UPLOAD_REPORT ] [ -r|--report-bucket REPORT_BUCKET ] [ -p|--profile AWS_PROFILE ] [-h]
+    Usage: $0 [ -c|--clear-logs ] [ -u|--upload-report ] [ -r|--report-bucket REPORT_BUCKET ] [ -p|--profile AWS_PROFILE ] [-h]
 
         --clear-logs                            (optional) Clear the log folder in the S3 bucket after creating the report.
         --upload-report                         (optional) Upload HTML report to S3 bucket.
@@ -25,11 +25,11 @@ while [ $# -gt 0 ]; do
         ;;
         -c|--clear-logs)
             CLEAR_LOGS=true
-            shift; shift;
+            shift;
         ;;
         -u|--upload-report)
             UPLOAD_REPORT=true
-            shift; shift;
+            shift;
         ;;
         -p|--profile)
             export AWS_DEFAULT_PROFILE="$2"
@@ -52,7 +52,7 @@ fi
 
 # Determine script dir
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-cd ${DIR}/..
+cd ${DIR}/../gatling-runner
 
 FOLDER="report"
 
