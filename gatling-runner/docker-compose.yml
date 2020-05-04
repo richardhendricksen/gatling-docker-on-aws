@@ -1,7 +1,7 @@
 version: '3'
 services:
   gatling-runner:
-    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${IMAGE_NAME}:latest
+    build: .
     command: -r ${AWS_REPORT_BUCKET}
     environment:
       - GATLING_NR_USERS=${GATLING_NR_USERS}
@@ -12,9 +12,3 @@ services:
       nofile:
         soft: 65535
         hard: 65535
-    logging:
-      driver: awslogs
-      options:
-        awslogs-group: /ecs/gatling-runner
-        awslogs-region: ${AWS_REGION}
-        awslogs-stream-prefix: gatling-runner
