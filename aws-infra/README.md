@@ -1,7 +1,7 @@
-# AWS CDK project for Gatling realtime monitoring on AWS ECS
-This module contains the [AWS CDK](https://docs.aws.amazon.com/cdk/latest/guide/home.html) code for the stack:
+# AWS CDK project for Gatling realtime monitoring and Gatling runner infra
+This module contains the [AWS CDK](https://docs.aws.amazon.com/cdk/latest/guide/home.html) code for the stacks:
 1. GatlingMonitoringEcsStack: contains an ECS cluster with a service and load balancer for monitoring of gatling consisting of grafana and influxdb
-1. GatlingRunnerEcsStack: contains an ECS cluster with a task definition consisting of the gatling runner docker container
+2. GatlingRunnerEcsStack: contains an ECS cluster with a task definition consisting of the gatling runner docker container
 
 ## AWS CDK installation
 The AWS CDK command line tool (cdk) and the AWS Construct Library are developed in TypeScript and run on Node.js.
@@ -28,6 +28,11 @@ The configuration of AWS credentials and region are very important, it's key to 
 
 **Note**: the aws-mfa tool may help when MFA is enforced on your AWS account: https://github.com/broamski/aws-mfa
 
+### Bootstrap error
+When running for the first time you can get an error referring to the toolkit stack:  
+`GatlingMonitoringEcsStack failed: Error: This stack uses assets, so the toolkit stack must be deployed to the environment (Run "cdk bootstrap aws://<id>/region")`  
+Run the mentioned command to fix this.
+
 ## Useful commands
  * `mvn package` compile and run tests
  * `cdk ls --profile <profile-name>` list all stacks in the app
@@ -39,4 +44,5 @@ The configuration of AWS credentials and region are very important, it's key to 
  * `cdk docs` open CDK documentation
  
  ## Example
- `VPC_ID=<id> cdk deploy GatlingMonitoringEcsStack --profile playground`
+ The stacks won't create their own VPC, so pass an existing VPC id:
+ `VPC_ID=<id> cdk deploy GatlingMonitoringEcsStack --profile <profile>`
