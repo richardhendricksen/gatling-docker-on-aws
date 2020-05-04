@@ -21,4 +21,4 @@ Vars:
 * `DRYRUN`: Show output, but don't run test. Default `false`
 
 #### Example command
-`AWS_PROFILE=playground CONTAINERS=10 USERS=2000 DRYRUN=true mvn clean compile exec:exec`
+`AWS_PROFILE=<profile> CONTAINERS=10 USERS=2000 DRYRUN=true mvn clean compile exec:exec`
