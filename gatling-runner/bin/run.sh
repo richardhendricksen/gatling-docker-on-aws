@@ -1,9 +1,9 @@
-#!/bin/bash
-function help_text {
+#!/bin/sh
+help_text() {
     cat <<EOF
-    Usage: $0 [ -p|--profile AWS_DEFAULT_PROFILE ] [ -r|--report-bucket REPORT_BUCKET ] [-h]
+    Usage: $0 [ -p|--profile PROFILE ] [ -r|--report-bucket REPORT_BUCKET ] [-h]
 
-        --profile AWS_DEFAULT_PROFILE         (optional) The profile to use from ~/.aws/credentials.
+        --profile PROFILE                     (optional) The profile to use from ~/.aws/credentials.
         --report-bucket REPORT_BUCKET         (required) name of the S3 bucket to upload the reports to. Must be in same AWS account as profile.
                                               It must be provided.
 EOF
@@ -39,14 +39,14 @@ if [ -z "$REPORT_BUCKET" ]
         exit 1
 fi
 
-## Clean reports
-rm -rf target/gatling/*
+# Run Gatling from jar
+USER_ARGS=""
+COMPILATION_CLASSPATH=`find -L ./target -maxdepth 1 -name "*.jar" -type f -exec printf :{} ';'`
+JAVA_OPTS="-server -XX:+UseThreadPriorities -XX:ThreadPriorityPolicy=42 -Xms512M -Xmx2048M -XX:+HeapDumpOnOutOfMemoryError -XX:+AggressiveOpts -XX:+OptimizeStringConcat -XX:+UseFastAccessorMethods -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -Djava.net.preferIPv4Stack=true -Djava.net.preferIPv6Addresses=false ${JAVA_OPTS}"
+java $JAVA_OPTS $USER_ARGS -cp $COMPILATION_CLASSPATH io.gatling.app.Gatling -s nl.codecontrol.gatling.simulations.BasicSimulation
 
-# Running performance test
-mvn gatling:test -o
-
-#Upload reports
-for _dir in target/gatling/*/
+# Upload reports
+for _dir in results/*/
 do
    aws s3 cp ${_dir}simulation.log s3://${REPORT_BUCKET}/logs/$HOSTNAME-simulation.log
 done

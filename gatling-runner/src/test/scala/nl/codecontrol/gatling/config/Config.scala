@@ -9,7 +9,6 @@ import scala.concurrent.duration._
 object Config {
   // params
   val baseUrl: String = sys.env.getOrElse("GATLING_BASEURL", "http://computer-database.gatling.io").toString
-  val cookieDomain: String = sys.env.getOrElse("GATLING_COOKIEDOMAIN", "computer-database.gatling.io/computers").toString
   val users: Int = sys.env.getOrElse("GATLING_NR_USERS", "1").toInt
   val maxDuration: FiniteDuration = sys.env.getOrElse("GATLING_MAX_DURATION", "2").toInt minutes
   val rampUpTime: FiniteDuration = sys.env.getOrElse("GATLING_RAMPUP_TIME", "10").toInt seconds

@@ -7,7 +7,10 @@ import io.gatling.http.Predef._
 object BasicScenario extends Simulation {
 
   val basicScenario: ScenarioBuilder = scenario("BasicSimulation")
-    .exec(http("request_1")
-    .get("/"))
-    .pause(5)
+    .doWhile(true, "mainLoop") {
+      exec(http("request_1")
+        .get("/"))
+        .pause(5)
+    }
+
 }

@@ -10,7 +10,6 @@ class BasicSimulation extends Simulation {
 
   println("Configuration:")
   println("BaseURL: " + baseUrl)
-  println("CookieDomain: " + cookieDomain)
   println("Nr concurrent users: " + users)
   println("Max duration: " + maxDuration)
   println("RampUp time: " + rampUpTime)
