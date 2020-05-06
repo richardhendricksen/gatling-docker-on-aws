@@ -8,19 +8,26 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - name: Install required dependencies
-        run: |
-          pip install --user awscli
-
       - uses: actions/setup-java@v1
         with:
           java-version: '8'
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: Install required dependencies
+        run: |
+          pip install --user awscli
+          npm install -g aws-cdk
 
       - name: Setup infra
         env:
           AWS_DEFAULT_REGION: "eu-west-1"
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          VPC_ID: "vpc-bf6957d9"
         run: |
           cd gatling-infra
-          mvn clean package
+          mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean package
+          cdk deploy GatlingRunnerEcsStack --require-approval false
