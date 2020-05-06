@@ -30,4 +30,4 @@ jobs:
         run: |
           cd gatling-infra
           mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean package
-          cdk deploy GatlingRunnerEcsStack --require-approval false
+          cdk deploy GatlingRunnerEcsStack --require-approval never
