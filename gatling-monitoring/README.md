@@ -6,7 +6,7 @@ The Gatling tests will then use graphite to report their status/results to this 
 Run: `docker-compose up`.
 
 ## Run on AWS
-Use the `aws-infra` project for this.
+Use the `gatling-runner-aws` project for this.
 
 ### Gatling runners
 The Gatling runners need to write their data to the InfluxDB.
