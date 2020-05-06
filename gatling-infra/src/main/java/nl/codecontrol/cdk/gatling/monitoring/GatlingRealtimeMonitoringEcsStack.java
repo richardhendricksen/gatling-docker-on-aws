@@ -1,8 +1,8 @@
 package nl.codecontrol.cdk.gatling.monitoring;
 
-import nl.codecontrol.cdk.gatling.GatlingEcsServiceProps;
-import nl.codecontrol.cdk.gatling.StackBuilder;
+import software.amazon.awscdk.core.Construct;
 import software.amazon.awscdk.core.Stack;
+import software.amazon.awscdk.core.StackProps;
 import software.amazon.awscdk.services.ec2.IVpc;
 import software.amazon.awscdk.services.ec2.Vpc;
 import software.amazon.awscdk.services.ec2.VpcLookupOptions;
@@ -10,14 +10,12 @@ import software.amazon.awscdk.services.ecs.Cluster;
 import software.amazon.awscdk.services.iam.Role;
 
 /**
- * Creates the CloudFormation for the AWS ECS Cluster and Service for the Gatling Real-Time Monitoring stack.
+ * Creates the CloudFormation for the AWS ECS Cluster and Service for the Gatling Monitoring stack.
  * The Gatling ECS cluster uses Fargate to run stateless services.
  */
 public class GatlingRealtimeMonitoringEcsStack extends Stack {
-    private static final String DEFAULT_GATLING_MONITORING_SERVICE_NAME = "gatling-monitoring";
-
-    private GatlingRealtimeMonitoringEcsStack(Builder builder) {
-        super(builder.getScope(), builder.getId(), builder.getStackProps());
+    private GatlingRealtimeMonitoringEcsStack(Construct scope, String id, StackProps stackProps, Builder builder) {
+        super(scope, id, stackProps);
 
         // VPC and subnets lookup
         IVpc vpc = Vpc.fromLookup(this, "gatlingVpc", VpcLookupOptions.builder()
@@ -36,24 +34,20 @@ public class GatlingRealtimeMonitoringEcsStack extends Stack {
 
         // Fargate service for Gatling Realtime Monitoring
         GatlingMonitoringFargateService.builder()
-                .gatlingMonitoringServiceProps(
-                        GatlingEcsServiceProps.builder()
-                                .serviceName(DEFAULT_GATLING_MONITORING_SERVICE_NAME)
-                                .clusterNamespace(builder.namespace)
-                                .ecsCluster(ecsCluster)
-                                .fargateExecutionRole(fargateExecutionRole)
-                                .fargateTaskRole(fargateTaskRole)
-                                .vpc(vpc)
-                                .build()
-                ).build(this, "GatlingMonitoringFargateService");
-
+                .serviceName("gatling-monitoring")
+                .clusterNamespace(builder.namespace)
+                .ecsCluster(ecsCluster)
+                .fargateExecutionRole(fargateExecutionRole)
+                .fargateTaskRole(fargateTaskRole)
+                .vpc(vpc)
+                .build(this, "GatlingMonitoringFargateService");
     }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    public static final class Builder extends StackBuilder<Builder> {
+    public static final class Builder {
         private String vpcId;
         private String ecsClusterName;
         private String namespace;
@@ -73,13 +67,8 @@ public class GatlingRealtimeMonitoringEcsStack extends Stack {
             return this;
         }
 
-        public GatlingRealtimeMonitoringEcsStack build() {
-            return new GatlingRealtimeMonitoringEcsStack(this);
-        }
-
-        @Override
-        protected Builder self() {
-            return this;
+        public GatlingRealtimeMonitoringEcsStack build(Construct scope, String id, StackProps stackProps) {
+            return new GatlingRealtimeMonitoringEcsStack(scope, id, stackProps, this);
         }
     }
 }

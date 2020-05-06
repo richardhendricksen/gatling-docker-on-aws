@@ -1,9 +1,9 @@
 package nl.codecontrol.cdk.gatling.runner;
 
-import nl.codecontrol.cdk.gatling.GatlingEcsServiceProps;
-import nl.codecontrol.cdk.gatling.StackBuilder;
+import software.amazon.awscdk.core.Construct;
 import software.amazon.awscdk.core.RemovalPolicy;
 import software.amazon.awscdk.core.Stack;
+import software.amazon.awscdk.core.StackProps;
 import software.amazon.awscdk.services.ec2.IVpc;
 import software.amazon.awscdk.services.ec2.Vpc;
 import software.amazon.awscdk.services.ec2.VpcLookupOptions;
@@ -18,10 +18,8 @@ import software.amazon.awscdk.services.s3.Bucket;
  */
 public class GatlingRunnerEcsStack extends Stack {
 
-    static final String S3_BUCKET_NAME = "gatling-runner";
-
-    private GatlingRunnerEcsStack(Builder builder) {
-        super(builder.getScope(), builder.getId(), builder.getStackProps());
+    private GatlingRunnerEcsStack(Construct scope, String id, StackProps stackProps, Builder builder) {
+        super(scope, id, stackProps);
 
         // VPC and subnets lookup
         final IVpc vpc = Vpc.fromLookup(this, "GatlingRunnerVpc", VpcLookupOptions.builder()
@@ -36,27 +34,23 @@ public class GatlingRunnerEcsStack extends Stack {
 
         // S3 bucket for results
         Bucket.Builder.create(this, "GatlingRunnerBucket")
-                .bucketName(S3_BUCKET_NAME)
+                .bucketName(builder.bucketName)
                 .blockPublicAccess(BlockPublicAccess.BLOCK_ALL)
                 .removalPolicy(RemovalPolicy.DESTROY)
                 .build();
 
         // IAM Roles needed to execute AWS ECS Fargate tasks
         Role fargateExecutionRole = new FargateExecutionRole(this, "FargateEcsExecutionRole", builder.namespace);
-        Role fargateTaskRole = new FargateTaskRole(this, "FargateEcsTaskRole", S3_BUCKET_NAME, builder.namespace);
+        Role fargateTaskRole = new FargateTaskRole(this, "FargateEcsTaskRole", builder.bucketName, builder.namespace);
 
         // Create task definition
-        GatlingRunnerFargateTask.builder()
-                .gatlingServiceProps(
-                        GatlingEcsServiceProps.builder()
-                                .serviceName("gatling-runner")
-                                .clusterNamespace(builder.namespace)
-                                .ecsCluster(ecsCluster)
-                                .fargateExecutionRole(fargateExecutionRole)
-                                .fargateTaskRole(fargateTaskRole)
-                                .vpc(vpc)
-                                .build()
-                ).build(this, "GatlingRunnerTaskDefinition");
+        GatlingRunnerFargateTaskDefinition.builder()
+                .taskDefinitionName("gatling-runner")
+                .clusterNamespace(builder.namespace)
+                .bucketName(builder.bucketName)
+                .fargateExecutionRole(fargateExecutionRole)
+                .fargateTaskRole(fargateTaskRole)
+                .build(this, "GatlingRunnerTaskDefinition");
 
     }
 
@@ -64,11 +58,16 @@ public class GatlingRunnerEcsStack extends Stack {
         return new Builder();
     }
 
-    public static final class Builder extends StackBuilder<Builder> {
+    public static final class Builder {
+        private String bucketName;
         private String vpcId;
         private String ecsClusterName;
         private String namespace;
 
+        public Builder bucketName(String bucketName) {
+            this.bucketName = bucketName;
+            return this;
+        }
         public Builder vpcId(String vpcId) {
             this.vpcId = vpcId;
             return this;
@@ -84,13 +83,8 @@ public class GatlingRunnerEcsStack extends Stack {
             return this;
         }
 
-        public GatlingRunnerEcsStack build() {
-            return new GatlingRunnerEcsStack(this);
-        }
-
-        @Override
-        protected Builder self() {
-            return this;
+        public GatlingRunnerEcsStack build(Construct scope, String id, StackProps stackProps) {
+            return new GatlingRunnerEcsStack(scope, id, stackProps, this);
         }
     }
 }

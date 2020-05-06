@@ -13,6 +13,8 @@ import java.util.Objects;
  */
 public class GatlingRealtimeMonitoringCdkApp {
 
+    private static final String S3_BUCKET_NAME = "gatling-runner";
+
     public static void main(final String[] args) {
         App app = new App();
 
@@ -28,22 +30,17 @@ public class GatlingRealtimeMonitoringCdkApp {
                 .build();
 
         GatlingRealtimeMonitoringEcsStack.builder()
-                .scope(app)
-                .id("GatlingMonitoringEcsStack")
-                .stackProps(stackProps)
                 .namespace("gatling-monitoring")
                 .ecsClusterName("gatling-monitoring-cluster")
                 .vpcId(vpcID)
-                .build();
+                .build(app, "GatlingMonitoringEcsStack", stackProps);
 
         GatlingRunnerEcsStack.builder()
-                .scope(app)
-                .id("GatlingRunnerEcsStack")
-                .stackProps(stackProps)
+                .bucketName(S3_BUCKET_NAME)
                 .namespace("gatling-runner")
                 .ecsClusterName("gatling-cluster")
                 .vpcId(vpcID)
-                .build();
+                .build(app, "GatlingRunnerEcsStack", stackProps);
 
         app.synth();
     }
