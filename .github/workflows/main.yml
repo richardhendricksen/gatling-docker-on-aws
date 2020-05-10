@@ -6,9 +6,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      AWS_REGION: "eu-west-1"
+      AWS_REGION: eu-west-1
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      BUCKET: gatling-runner
+      VPC_ID: vpc-bf6957d9
     steps:
       - uses: actions/checkout@v1
 
@@ -30,9 +32,6 @@ jobs:
         run: mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean package
 
       - name: Setup infra
-        env:
-          VPC_ID: "vpc-bf6957d9"
-          S3_BUCKET_NAME: "gatling-runner"
         working-directory: ./gatling-infra
         run: |
           mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean package
@@ -40,21 +39,20 @@ jobs:
 
       - name: Run loadtest
         env:
-          VPC_ID: vpc-bf6957d9
           CLUSTER: gatling-cluster
           TASK_DEFINITION: gatling-runner
           CONTAINERS: 10
-          USERS: 10
         working-directory: ./gatling-runner-aws
-        run: mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean compile exec:exec
+        run: |
+          aws s3 rm s3://${BUCKET}/logs --recursive
+          mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean compile exec:exec
 
       - name: Create report
-        working-directory: ./scripts
-        run: ./generateHTMLReport -r gatling-runner
+        working-directory: ./gatling-runner
+        run: |
+          aws s3 cp s3://${BUCKET}/logs/ target/gatling/bingel-loadtest --recursive --no-progress
+          mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn gatling:test -DgenerateReport=true
 
       - name: Cleanup infra
-        env:
-          VPC_ID: "vpc-bf6957d9"
-          S3_BUCKET_NAME: "gatling-runner"
         working-directory: ./gatling-infra
         run: cdk destory GatlingRunnerEcsStack --force
