@@ -5,6 +5,10 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      AWS_DEFAULT_REGION: "eu-west-1"
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
       - uses: actions/checkout@v1
 
@@ -27,12 +31,27 @@ jobs:
 
       - name: Setup infra
         env:
-          AWS_DEFAULT_REGION: "eu-west-1"
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           VPC_ID: "vpc-bf6957d9"
           S3_BUCKET_NAME: "gatling-runner"
         working-directory: ./gatling-infra
         run: |
           mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean package
           cdk deploy GatlingRunnerEcsStack --require-approval never
+
+      - name: Run loadtest
+        env:
+          CONTAINERS: 10
+          USERS: 10
+        working-directory: ./gatling-runner-aws
+        run: mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean compile exec:exec
+
+      - name: Create report
+        working-directory: ./scripts
+        run: ./generateHTMLReport -r gatling-runner
+
+      - name: Cleanup infra
+        env:
+          VPC_ID: "vpc-bf6957d9"
+          S3_BUCKET_NAME: "gatling-runner"
+        working-directory: ./gatling-infra
+        run: cdk destory GatlingRunnerEcsStack --force
