@@ -23,7 +23,7 @@ jobs:
 
       - name: Build gatling-runner
         working-directory: ./gatling-runner
-        run: mvn package
+        run: mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean package
 
       - name: Setup infra
         env:
