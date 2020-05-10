@@ -40,6 +40,9 @@ jobs:
 
       - name: Run loadtest
         env:
+          VPC_ID: vpc-bf6957d9
+          CLUSTER: gatling-cluster
+          TASK_DEFINITION: gatling-runner
           CONTAINERS: 10
           USERS: 10
         working-directory: ./gatling-runner-aws
