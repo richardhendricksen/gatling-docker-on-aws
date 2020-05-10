@@ -19,6 +19,7 @@ import software.amazon.awssdk.services.ecs.model.RunTaskRequest;
 import software.amazon.awssdk.services.ecs.model.TaskOverride;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.lang.Boolean.parseBoolean;
@@ -28,15 +29,14 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class AWSLoadTestRunner {
 
     private static final Logger LOG = getLogger(AWSLoadTestRunner.class);
-
-    private static final String VPC_ID = "vpc-d28140b7"; // default vpc in playground aws account
-    private static final String CLUSTER_NAME = "gatling-cluster"; // cluster name created by aws-cdk project
-    private static final String TASK_DEFINITION = "gatling-runner"; // task definition name created by aws-cdk project
     private static final int SLEEP_TIME = 60_000;
 
     private final Config config;
     private final EcsClient ecsClient;
     private final Ec2Client ec2Client;
+    private final String vpcId;
+    private final String clusterName;
+    private final String taskDefinitionName;
 
     public static void main(String[] args) {
         AWSLoadTestRunner awsLoadTestRunner = new AWSLoadTestRunner();
@@ -45,6 +45,10 @@ public class AWSLoadTestRunner {
     }
 
     public AWSLoadTestRunner() {
+        this.vpcId = Objects.requireNonNull(System.getenv("VPC_ID"), "VPC_ID is required.");
+        this.clusterName = Objects.requireNonNull(System.getenv("CLUSTER"), "CLUSTER_NAME is required.");
+        this.taskDefinitionName = Objects.requireNonNull(System.getenv("TASK_DEFINITION"), "TASK_DEFINITION_NAME is required.");
+
         this.config = new Config();
         this.ecsClient = EcsClient.builder().build();
         this.ec2Client = Ec2Client.builder().build();
@@ -107,8 +111,8 @@ public class AWSLoadTestRunner {
 
         return RunTaskRequest.builder()
                 .launchType(LaunchType.FARGATE)
-                .cluster(CLUSTER_NAME)
-                .taskDefinition(TASK_DEFINITION)
+                .cluster(clusterName)
+                .taskDefinition(taskDefinitionName)
                 .count(1)
                 .networkConfiguration(networkConfiguration)
                 .overrides(taskOverride)
@@ -118,7 +122,7 @@ public class AWSLoadTestRunner {
     private AwsVpcConfiguration getAwsVpcConfiguration() {
         return AwsVpcConfiguration.builder()
                 .assignPublicIp(AssignPublicIp.ENABLED)
-                .subnets(getSubnets(VPC_ID))
+                .subnets(getSubnets(vpcId))
                 .build();
     }
 
@@ -139,7 +143,7 @@ public class AWSLoadTestRunner {
     }
 
     private Cluster getClusterState() {
-        DescribeClustersRequest request = DescribeClustersRequest.builder().clusters(CLUSTER_NAME).build();
+        DescribeClustersRequest request = DescribeClustersRequest.builder().clusters(clusterName).build();
         return ecsClient.describeClusters(request).clusters().get(0);
     }
 
