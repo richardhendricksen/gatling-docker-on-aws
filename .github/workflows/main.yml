@@ -21,13 +21,17 @@ jobs:
           pip install --user awscli
           npm install -g aws-cdk
 
+      - name: Build gatling-runner
+        working-directory: ./gatling-runner
+        run: mvn package
+
       - name: Setup infra
         env:
           AWS_DEFAULT_REGION: "eu-west-1"
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           VPC_ID: "vpc-bf6957d9"
+        working-directory: ./gatling-infra
         run: |
-          cd gatling-infra
           mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean package
           cdk deploy GatlingRunnerEcsStack --require-approval never
