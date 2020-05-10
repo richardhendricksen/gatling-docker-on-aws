@@ -61,7 +61,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
                 <configuration>
-                    <mainClass>nl.codecontrol.cdk.gatling.GatlingRealtimeMonitoringCdkApp</mainClass>
+                    <mainClass>nl.codecontrol.cdk.gatling.GatlingInfraCdkApp</mainClass>
                 </configuration>
             </plugin>
         </plugins>

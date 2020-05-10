@@ -11,7 +11,7 @@ import java.util.Objects;
 /**
  * AWS CDK app that contains the stacks for Gatling Realtime Monitoring and Gatling Runner
  */
-public class GatlingRealtimeMonitoringCdkApp {
+public class GatlingInfraCdkApp {
 
     private static final String S3_BUCKET_NAME = "gatling-runner";
 
