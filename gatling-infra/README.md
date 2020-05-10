@@ -44,5 +44,5 @@ Run the mentioned command to fix this.
  * `cdk docs` open CDK documentation
  
  ## Example
- The stacks won't create their own VPC, so pass an existing VPC id:
- `VPC_ID=<id> cdk deploy GatlingMonitoringEcsStack --profile <profile>`
+ The stacks won't create their own VPC and S3 Bucket, so pass those using env vars:
+ `VPC_ID=<id> S3_BUCKET_NAME=<name> cdk deploy GatlingMonitoringEcsStack --profile <profile>`

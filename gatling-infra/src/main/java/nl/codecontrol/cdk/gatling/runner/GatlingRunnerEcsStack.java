@@ -32,13 +32,6 @@ public class GatlingRunnerEcsStack extends Stack {
                 .vpc(vpc)
                 .build();
 
-        // S3 bucket for results
-        Bucket.Builder.create(this, "GatlingRunnerBucket")
-                .bucketName(builder.bucketName)
-                .blockPublicAccess(BlockPublicAccess.BLOCK_ALL)
-                .removalPolicy(RemovalPolicy.DESTROY)
-                .build();
-
         // IAM Roles needed to execute AWS ECS Fargate tasks
         Role fargateExecutionRole = new FargateExecutionRole(this, "FargateEcsExecutionRole", builder.namespace);
         Role fargateTaskRole = new FargateTaskRole(this, "FargateEcsTaskRole", builder.bucketName, builder.namespace);

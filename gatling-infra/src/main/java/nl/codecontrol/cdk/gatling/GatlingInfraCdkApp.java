@@ -13,14 +13,13 @@ import java.util.Objects;
  */
 public class GatlingInfraCdkApp {
 
-    private static final String S3_BUCKET_NAME = "gatling-runner";
-
     public static void main(final String[] args) {
         App app = new App();
 
         final String account = Objects.requireNonNull(System.getenv("CDK_DEFAULT_ACCOUNT"), "CDK_DEFAULT_ACCOUNT is required.");
         final String region = Objects.requireNonNull(System.getenv("CDK_DEFAULT_REGION"), "CDK_DEFAULT_REGION is required.");
         final String vpcID = Objects.requireNonNull(System.getenv("VPC_ID"), "VPC_ID is required.");
+        final String s3BucketName = Objects.requireNonNull(System.getenv("S3_BUCKET_NAME"), "S3_BUCKET_NAME is required.");
 
         StackProps stackProps = StackProps.builder()
                 .env(Environment.builder()
@@ -36,7 +35,7 @@ public class GatlingInfraCdkApp {
                 .build(app, "GatlingMonitoringEcsStack", stackProps);
 
         GatlingRunnerEcsStack.builder()
-                .bucketName(S3_BUCKET_NAME)
+                .bucketName(s3BucketName)
                 .namespace("gatling-runner")
                 .ecsClusterName("gatling-cluster")
                 .vpcId(vpcID)
