@@ -27,15 +27,15 @@ jobs:
           pip install --user awscli
           npm install -g aws-cdk
 
-#      - name: Build gatling-runner
-#        working-directory: ./gatling-runner
-#        run: mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean package
-#
-#      - name: Setup infra
-#        working-directory: ./gatling-infra
-#        run: |
-#          mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean package
-#          cdk deploy GatlingRunnerEcsStack --require-approval never
+      - name: Build gatling-runner
+        working-directory: ./gatling-runner
+        run: mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean package
+
+      - name: Setup infra
+        working-directory: ./gatling-infra
+        run: |
+          mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean package
+          cdk deploy GatlingRunnerEcsStack --require-approval never
 
       - name: Run loadtest
         env:
