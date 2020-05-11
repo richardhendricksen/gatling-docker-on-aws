@@ -11,18 +11,12 @@ import software.amazon.awscdk.services.logs.LogGroup;
 import software.amazon.awscdk.services.logs.RetentionDays;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 class GatlingRunnerContainerOptions extends Construct {
     private final ContainerDefinitionOptions containerDefinitionOptions;
 
     public GatlingRunnerContainerOptions(Construct scope, String id, String clusterNamespace, String taskDefinitionName, String bucket) {
         super(scope, id);
-
-        // Set default environment variables if desired
-        Map<String, String> environmentVariables = new HashMap<>();
-        environmentVariables.put("GATLING_START_USERID", "0");
 
         DockerImageAsset gatlingRunnerAsset = DockerImageAsset.Builder.create(this, "gatlingRunnerAsset")
                 .directory("../gatling-runner")
@@ -39,7 +33,6 @@ class GatlingRunnerContainerOptions extends Construct {
                                 .build())
                         .streamPrefix(taskDefinitionName)
                         .build()))
-                .environment(environmentVariables)
                 .build();
     }
 
