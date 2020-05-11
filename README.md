@@ -1,4 +1,4 @@
-# Distributed Gatling testing using Docker on AWS [![Build Status](https://travis-ci.org/richardhendricksen/gatling-docker-on-aws.svg?branch=master)](https://travis-ci.org/richardhendricksen/gatling-docker-on-aws)
+# Distributed Gatling testing using Docker on AWS [![CI](https://github.com/richardhendricksen/gatling-docker-on-aws/workflows/CI/badge.svg)](https://github.com/richardhendricksen/gatling-docker-on-aws/actions?query=workflow%3ACI)
 
 This is the improved setup, for the code for the old setup described in my [original blog](https://medium.com/@richard.hendricksen/distributed-load-testing-with-gatling-using-docker-and-aws-d497605692db) post see the [v1](https://github.com/richardhendricksen/gatling-docker-on-aws/tree/v1) branch.  
 Blog describing the new setup is underway.
