@@ -1,100 +1,39 @@
 # Distributed Gatling testing using Docker on AWS [![Build Status](https://travis-ci.org/richardhendricksen/gatling-docker-on-aws.svg?branch=master)](https://travis-ci.org/richardhendricksen/gatling-docker-on-aws)
 
-
-Read more about it in my blog post [here](https://medium.com/@richard.hendricksen/distributed-load-testing-with-gatling-using-docker-and-aws-d497605692db).
+This is the improved setup, for the code for the old setup described in my [original blog](https://medium.com/@richard.hendricksen/distributed-load-testing-with-gatling-using-docker-and-aws-d497605692db) post see the [v1](https://github.com/richardhendricksen/gatling-docker-on-aws/tree/v1) branch.  
+Blog describing the new setup is underway.
 
 ## Prerequisites  
 ### Create  
-* ECR repository for Gatling Docker image  
 * S3 bucket for Gatling logs  
-* ECS cluster for running Docker containers, see below  
 
 ### Install  
-* aws-cli. Install using `pip install awscli`  
-* ecs-cli. Download from [here](https://github.com/aws/amazon-ecs-cli#latest-version)  
-* Docker
+* aws-cli  
+* Docker  
+* Maven >= 3.5  
+* Java >= 8  
+* Node >= 10.3.0  
 
-### Create task execution IAM role
-For a quick tutorial on AWS Fargate see [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-cli-tutorial-fargate.html).
+## Projects in this repository
 
-See Step 1 on the page (Create the task execution IAM role) for details on creating the role and attaching the task execution role policy.
+### gatling-infra
+Contains AWS CDK project for creating needed infra for running loadtest on AWS.  
 
-Finally, attach an appropriate S3 policy to the created role for writing to your S3 bucket.
+See [README.md](gatling-runner/README.md) in project. 
 
-## Running  
-The test consists of 3 steps:  
-* Building the Docker image  
-* Running the load test on AWS  
-* Creating the HTML report  
+### gatling-monitoring
+Dockerfiles for realtime Gatling Monitoring  
 
-Since all steps use aws-cli or ecs-cli, make sure to setup your AWS env variables:  
-* `export AWS_DEFAULT_REGION=<region>`  
-* `export AWS_ACCESS_KEY_ID=<id>`  
-* `export AWS_SECRET_ACCESS_KEY=<key>`  
+See [README.md](gatling-monitoring/README.md) in project. 
 
-You can run the scripts provided below individually or as part of a build pipeline. See [Travis](https://github.com/richardhendricksen/gatling-docker-on-aws/blob/master/.travis.yml) 
-and [Jenkins](https://github.com/richardhendricksen/gatling-docker-on-aws/blob/master/Jenkinsfile) pipelines for examples.
+### gatling-runner
+Mavenized Gatling project containing loadtest code.  
+Contains Dockerfile to build image to run on AWS.  
 
-### Building Docker image
-`sh scripts/buildDockerImage.sh  --name <IMAGE_NAME> --region <AWS_REGION>`
+See [README.md](gatling-runner/README.md) in project. 
 
-### Create ECS Fargate cluster
-`sh scripts/createClusterOnAWS.sh --cluster-name <ECS_CLUSTER_NAME> --config-name <ECS_CONFIG_NAME> --region <AWS_REGION>`
 
-### Running load test on AWS
-`sh scripts/runLoadtestOnAWS.sh --report-bucket <S3_BUCKET> --containers <NR_CONTAINERS> --users <NR_USERS_PER_CONTAINER> --duration <DURATION_IN_MIN> --ramp-up <RAMPUP_TIME_IN_SEC> --ecs-cluster <ECS_CLUSTER> --region <AWS_REGION> --name <DOCKER_IMAGE>`
+### gatling-runner-aws
+AWS SDK project for running the loadtest on AWS.  
 
-### Stop tasks (if necessary)
-`sh scripts/stopAllTasksOnCluster.sh --ecs-cluster <ECS_CLUSTER_NAME> --region <AWS_REGION>`
-
-### Creating HTML report
-Generate final HTML report:
-`sh scripts/generateHTMLReport.sh --report-bucket <S3_BUCKET>`
-
-Optionally, you can choose to delete the simulation logs and upload the final HTML report to the S3 bucket in addition to generating the final report.
-`sh scripts/generateHTMLReport.sh --report-bucket na-gatling-results --clear-logs true --upload-report true`
-
-### Delete ECS Fargate cluster
-To delete the cluster:
-`sh scripts/deleteClusterOnAWS.sh --cluster-name <ECS_CLUSTER_NAME> --region <AWS_REGION>`
-
-Optionally, you can choose to de-register task definitions and delete log group in addition to deleting cluster
-`sh scripts/deleteClusterOnAWS.sh --cluster-name <ECS_CLUSTER_NAME> --region <AWS_REGION> --task-definition-family <TASK_DEFINITION> --log-group <LOG_GROUP>`
-
-## Developing
-
-### Run Gatling tests directly without Docker
-`mvn clean gatling:test`  
-
-### Creating docker image locally
-Use default time zone:
-`docker build -t gatling-runner .` 
-
-Set local time zone:
-`docker build --build-arg TIME_ZONE="$(curl -s https://ipapi.co/timezone)" -t gatling-runner .`    
-
-### Run docker image locally
-Use docker volume to add your AWS credentials that has permission to write to the S3 bucket. You can also optionally provide the AWS profile:  
-`docker run --rm -v ${HOME}/.aws/credentials:/root/.aws/credentials:ro gatling-runner -r <bucketname> [-p <profile]`  
-
-### ECS Cluster
-
-#### Create ECS cluster on AWS
-
-`ecs-cli configure --cluster gatlingCluster --region eu-west-1 --config-name gatlingConfiguration`  
-`ecs-cli up --capability-iam --instance-type t3.large --size 1`  
-
-IMPORTANT: The command will generate all the needed stuff, but make sure to add to the generated IAM role the policy for writing to your S3 bucket.
-
-#### OR Create ECS cluster using Fargate:
-`ecs-cli configure --cluster gatlingCluster --region eu-west-1 --default-launch-type FARGATE --config-name gatlingConfiguration`  
-`ecs-cli up`  
-
-#### Checking progress of tasks:
-`ecs-cli compose ps`  
-
-#### Getting logging from a task:
-`ecs-cli logs --task-id <task_id> --follow`  
-
-#### Remove cluster:
-`ecs-cli down --force`  
+See [README.md](aws-loadtest-runner/README.md) in project. 
