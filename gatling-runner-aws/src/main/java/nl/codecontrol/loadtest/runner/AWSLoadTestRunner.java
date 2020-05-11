@@ -58,13 +58,13 @@ public class AWSLoadTestRunner {
         }
 
         LOG.info("Starting loadtest on AWS with {} users: {} containers with {} users each", config.nrContainers * parseInt(config.usersPerContainer), config.nrContainers, config.usersPerContainer);
-        LOG.info("Starting from userID {}", config.feederStart);
+        LOG.info("Feeder starting from {}", config.feederStart);
         LOG.info("Running for {} minutes", config.gatlingOverrideMaxDuration);
         int currentFeeder = config.feederStart;
         for (int i = 0; i < config.nrContainers; i++) {
             final RunTaskRequest runTaskRequest = createRunTaskRequest(currentFeeder);
 
-            LOG.info("Starting container {}/{}, starting from userID {}",  i+1, config.nrContainers, currentFeeder);
+            LOG.info("Starting container {}/{}, feeder starting from {}",  i+1, config.nrContainers, currentFeeder);
             if(!config.dryrun) {
                 ecsClient.runTask(runTaskRequest);
             }
@@ -95,6 +95,7 @@ public class AWSLoadTestRunner {
         environmentVariables.add(KeyValuePair.builder().name("REPORT_BUCKET").value(config.gatlingReportBucket).build());
         environmentVariables.add(KeyValuePair.builder().name("GATLING_USERS").value(String.valueOf(config.usersPerContainer)).build());
         environmentVariables.add(KeyValuePair.builder().name("GATLING_FEEDER_START").value(String.valueOf(currentFeeder)).build());
+        environmentVariables.add(KeyValuePair.builder().name("SIMULATION").value(config.gatlingSimulation).build());
         // optional, don't set if null
         if(config.gatlingOverrideMaxDuration != null) {
             environmentVariables.add(KeyValuePair.builder().name("GATLING_MAX_DURATION").value(config.gatlingOverrideMaxDuration).build());
@@ -163,6 +164,7 @@ public class AWSLoadTestRunner {
         final String clusterName = Objects.requireNonNull(getenv("CLUSTER"), "CLUSTER_NAME is required.");
         final String taskDefinitionName = Objects.requireNonNull(getenv("TASK_DEFINITION"), "TASK_DEFINITION_NAME is required.");
         final String gatlingReportBucket = Objects.requireNonNull(System.getenv("REPORT_BUCKET"), "REPORT_BUCKET is required.");
+        final String gatlingSimulation = Objects.requireNonNull(System.getenv("SIMULATION"), "SIMULATION is required.");
 
         //Optional with defaults
         final int nrContainers = parseInt(getEnvVarOrDefault("CONTAINERS", "1"));
