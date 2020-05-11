@@ -58,8 +58,8 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: Gatling report
-          path: gatling-runner/target/
+          path: gatling-runner/target/gatling
 
       - name: Cleanup infra
         working-directory: ./gatling-infra
-        run: cdk destory GatlingRunnerEcsStack --force
+        run: cdk destroy GatlingRunnerEcsStack --force
