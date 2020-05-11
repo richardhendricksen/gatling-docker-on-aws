@@ -45,4 +45,4 @@ Run the mentioned command to fix this.
  
  ## Example
  The stacks won't create their own VPC and S3 Bucket, so pass those using env vars:
- `VPC_ID=vpc-bf6957d9 REPORT_BUCKET=gatling-runner cdk deploy GatlingMonitoringEcsStack --profile <profile>`
+ `VPC_ID=<id> REPORT_BUCKET=<bucket> cdk deploy GatlingMonitoringEcsStack --profile <profile>`
