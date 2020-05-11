@@ -18,12 +18,14 @@ import software.amazon.awssdk.services.ecs.model.NetworkConfiguration;
 import software.amazon.awssdk.services.ecs.model.RunTaskRequest;
 import software.amazon.awssdk.services.ecs.model.TaskOverride;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.lang.Boolean.parseBoolean;
 import static java.lang.Integer.parseInt;
+import static java.lang.System.getenv;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class AWSLoadTestRunner {
@@ -34,9 +36,6 @@ public class AWSLoadTestRunner {
     private final Config config;
     private final EcsClient ecsClient;
     private final Ec2Client ec2Client;
-    private final String vpcId;
-    private final String clusterName;
-    private final String taskDefinitionName;
 
     public static void main(String[] args) {
         AWSLoadTestRunner awsLoadTestRunner = new AWSLoadTestRunner();
@@ -45,10 +44,6 @@ public class AWSLoadTestRunner {
     }
 
     public AWSLoadTestRunner() {
-        this.vpcId = Objects.requireNonNull(System.getenv("VPC_ID"), "VPC_ID is required.");
-        this.clusterName = Objects.requireNonNull(System.getenv("CLUSTER"), "CLUSTER_NAME is required.");
-        this.taskDefinitionName = Objects.requireNonNull(System.getenv("TASK_DEFINITION"), "TASK_DEFINITION_NAME is required.");
-
         this.config = new Config();
         this.ecsClient = EcsClient.builder().build();
         this.ec2Client = Ec2Client.builder().build();
@@ -62,19 +57,19 @@ public class AWSLoadTestRunner {
             throw new IllegalStateException("There are already tasks active on the cluster!");
         }
 
-        LOG.info("Starting loadtest on AWS with {} users: {} containers with {} users each", config.nrContainers * config.usersPerContainer, config.nrContainers, config.usersPerContainer);
-        LOG.info("Starting from userID {}", config.startUserId);
-        LOG.info("Running for {} minutes", config.duration);
-        int startFromUserId = config.startUserId;
+        LOG.info("Starting loadtest on AWS with {} users: {} containers with {} users each", config.nrContainers * parseInt(config.usersPerContainer), config.nrContainers, config.usersPerContainer);
+        LOG.info("Starting from userID {}", config.feederStart);
+        LOG.info("Running for {} minutes", config.gatlingOverrideMaxDuration);
+        int currentFeeder = config.feederStart;
         for (int i = 0; i < config.nrContainers; i++) {
-            final RunTaskRequest runTaskRequest = createRunTaskRequest(startFromUserId);
+            final RunTaskRequest runTaskRequest = createRunTaskRequest(currentFeeder);
 
-            LOG.info("Starting container {}/{}, starting from userID {}",  i+1, config.nrContainers, startFromUserId);
+            LOG.info("Starting container {}/{}, starting from userID {}",  i+1, config.nrContainers, currentFeeder);
             if(!config.dryrun) {
                 ecsClient.runTask(runTaskRequest);
             }
 
-            startFromUserId += config.usersPerContainer;
+            currentFeeder += parseInt(config.usersPerContainer);
         }
 
         LOG.info("Waiting until all tasks on cluster are completed...");
@@ -93,26 +88,35 @@ public class AWSLoadTestRunner {
         }
     }
 
-    private RunTaskRequest createRunTaskRequest(int startFromUserId) {
+    private RunTaskRequest createRunTaskRequest(int currentFeeder) {
         final NetworkConfiguration networkConfiguration = getNetworkConfiguration();
+
+        List<KeyValuePair> environmentVariables = new ArrayList<>();
+        environmentVariables.add(KeyValuePair.builder().name("REPORT_BUCKET").value(config.gatlingReportBucket).build());
+        environmentVariables.add(KeyValuePair.builder().name("GATLING_USERS").value(String.valueOf(config.usersPerContainer)).build());
+        environmentVariables.add(KeyValuePair.builder().name("GATLING_FEEDER_START").value(String.valueOf(currentFeeder)).build());
+        // optional, don't set if null
+        if(config.gatlingOverrideMaxDuration != null) {
+            environmentVariables.add(KeyValuePair.builder().name("GATLING_MAX_DURATION").value(config.gatlingOverrideMaxDuration).build());
+        }
+        if(config.gatlingOverrideRampUpTime != null) {
+            environmentVariables.add(KeyValuePair.builder().name("GATLING_RAMPUP_TIME").value(config.gatlingOverrideMaxDuration).build());
+        }
+        if(config.gatlingOverrideBaseUrl != null) {
+            environmentVariables.add(KeyValuePair.builder().name("GATLING_BASEURL").value(config.gatlingOverrideBaseUrl).build());
+        }
 
         final TaskOverride taskOverride = TaskOverride.builder()
                 .containerOverrides(ContainerOverride.builder()
                         .name("gatlingRunnerContainer")
-                        .command("-r", config.reportBucket, "-s", config.simulation)
-                        .environment(
-                                KeyValuePair.builder().name("GATLING_NR_STUDENTS").value(String.valueOf(config.usersPerContainer)).build(),
-                                KeyValuePair.builder().name("GATLING_MAX_DURATION").value(config.duration).build(),
-                                KeyValuePair.builder().name("GATLING_RAMPUP_TIME").value(config.rampUpTime).build(),
-                                KeyValuePair.builder().name("GATLING_BASEURL").value(config.baseUrl).build(),
-                                KeyValuePair.builder().name("GATLING_STUDENT_FEEDER_FROM").value(String.valueOf(startFromUserId)).build())
+                        .environment(environmentVariables)
                         .build())
                 .build();
 
         return RunTaskRequest.builder()
                 .launchType(LaunchType.FARGATE)
-                .cluster(clusterName)
-                .taskDefinition(taskDefinitionName)
+                .cluster(config.clusterName)
+                .taskDefinition(config.taskDefinitionName)
                 .count(1)
                 .networkConfiguration(networkConfiguration)
                 .overrides(taskOverride)
@@ -122,7 +126,7 @@ public class AWSLoadTestRunner {
     private AwsVpcConfiguration getAwsVpcConfiguration() {
         return AwsVpcConfiguration.builder()
                 .assignPublicIp(AssignPublicIp.ENABLED)
-                .subnets(getSubnets(vpcId))
+                .subnets(getSubnets(config.vpcId))
                 .build();
     }
 
@@ -143,7 +147,7 @@ public class AWSLoadTestRunner {
     }
 
     private Cluster getClusterState() {
-        DescribeClustersRequest request = DescribeClustersRequest.builder().clusters(clusterName).build();
+        DescribeClustersRequest request = DescribeClustersRequest.builder().clusters(config.clusterName).build();
         return ecsClient.describeClusters(request).clusters().get(0);
     }
 
@@ -154,22 +158,29 @@ public class AWSLoadTestRunner {
     }
 
     static class Config {
-        final String reportBucket = getEnvVarOrDefault("REPORTBUCKET", "gatling-loadtest");
-        final String baseUrl = getEnvVarOrDefault("BASEURL", "");
+        // Required params
+        final String vpcId = Objects.requireNonNull(getenv("VPC_ID"), "VPC_ID is required.");
+        final String clusterName = Objects.requireNonNull(getenv("CLUSTER"), "CLUSTER_NAME is required.");
+        final String taskDefinitionName = Objects.requireNonNull(getenv("TASK_DEFINITION"), "TASK_DEFINITION_NAME is required.");
+        final String gatlingReportBucket = Objects.requireNonNull(System.getenv("REPORT_BUCKET"), "REPORT_BUCKET is required.");
+
+        //Optional with defaults
         final int nrContainers = parseInt(getEnvVarOrDefault("CONTAINERS", "1"));
-        final int usersPerContainer = parseInt(getEnvVarOrDefault("USERS", "10"));
-        final int startUserId = parseInt(getEnvVarOrDefault("STARTUSERID", "0"));
-        final String duration = getEnvVarOrDefault("DURATION", "5"); // minutes
-        final String rampUpTime = getEnvVarOrDefault("RAMPUPTIME", "1"); // seconds
-        final String simulation = getEnvVarOrDefault("SIMULATION", ""); // seconds
+        final int feederStart = parseInt(getEnvVarOrDefault("FEEDER_START", "0"));
         final boolean dryrun = parseBoolean(getEnvVarOrDefault("DRYRUN", "false"));
+        final String usersPerContainer = getEnvVarOrDefault("USERS", "10");
+
+        //Optional
+        final String gatlingOverrideBaseUrl = getenv("BASEURL");
+        final String gatlingOverrideMaxDuration = getenv("MAX_DURATION"); // minutes
+        final String gatlingOverrideRampUpTime = getenv("RAMPUP_TIME"); // seconds
 
 
         String getEnvVarOrDefault(String var, String defaultValue) {
-            if (System.getenv(var) == null) {
+            if (getenv(var) == null) {
                 return defaultValue;
             } else {
-                return System.getenv(var);
+                return getenv(var);
             }
         }
     }
