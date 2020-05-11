@@ -19,7 +19,7 @@ public class GatlingInfraCdkApp {
         final String account = Objects.requireNonNull(System.getenv("CDK_DEFAULT_ACCOUNT"), "CDK_DEFAULT_ACCOUNT is required.");
         final String region = Objects.requireNonNull(System.getenv("CDK_DEFAULT_REGION"), "CDK_DEFAULT_REGION is required.");
         final String vpcID = Objects.requireNonNull(System.getenv("VPC_ID"), "VPC_ID is required.");
-        final String bucketName = Objects.requireNonNull(System.getenv("BUCKET"), "BUCKET is required.");
+        final String bucketName = Objects.requireNonNull(System.getenv("REPORT_BUCKET"), "BUCKET is required.");
 
         StackProps stackProps = StackProps.builder()
                 .env(Environment.builder()
