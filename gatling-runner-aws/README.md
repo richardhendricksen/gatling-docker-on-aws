@@ -28,4 +28,4 @@ Optional:
 
 
 #### Example command
-`AWS_PROFILE=<profile> VPC_ID=vpc-bf6957d9 CLUSTER=gatling-cluster TASK_DEFINITION=gatling-runner CONTAINERS=10 USERS=2000 DRYRUN=true mvn clean compile exec:exec`
+`AWS_PROFILE=<profile> VPC_ID=vpc-bf6957d9 CLUSTER=gatling-cluster TASK_DEFINITION=gatling-runner CONTAINERS=10 USERS=2000 SIMULATION=nl.codecontrol.gatling.simulations.BasicSimulation DRYRUN=true mvn clean compile exec:exec`
