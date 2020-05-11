@@ -1,0 +1,65 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: eu-west-1
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      REPORT_BUCKET: gatling-runner
+      VPC_ID: vpc-bf6957d9
+    steps:
+      - uses: actions/checkout@v1
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '8'
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: Install required dependencies
+        run: |
+          pip install --user awscli
+          npm install -g aws-cdk
+
+      - name: Build gatling-runner
+        working-directory: ./gatling-runner
+        run: mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean package
+
+      - name: Setup infra
+        working-directory: ./gatling-infra
+        run: |
+          mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean package
+          cdk deploy GatlingRunnerEcsStack --require-approval never
+
+      - name: Run loadtest
+        env:
+          CLUSTER: gatling-cluster
+          TASK_DEFINITION: gatling-runner
+          CONTAINERS: 2
+          USERS: 10
+          SIMULATION: nl.codecontrol.gatling.simulations.BasicSimulation
+        working-directory: ./gatling-runner-aws
+        run: |
+          aws s3 rm s3://${REPORT_BUCKET}/logs --recursive
+          mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean compile exec:exec
+
+      - name: Create report
+        working-directory: ./gatling-runner
+        run: |
+          aws s3 cp s3://${REPORT_BUCKET}/logs/ target/gatling/bingel-loadtest --recursive --no-progress
+          mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn gatling:test -DgenerateReport=true
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Gatling report
+          path: gatling-runner/target/gatling
+
+      - name: Cleanup infra
+        working-directory: ./gatling-infra
+        run: cdk destroy GatlingRunnerEcsStack --force

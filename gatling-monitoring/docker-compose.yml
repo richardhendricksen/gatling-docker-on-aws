@@ -1,0 +1,20 @@
+version: '3'
+services:
+  gatling-influxdb:
+    build: ./influxdb
+    env_file: configuration.env
+    ports:
+      - '8086:8086'
+      - '2003:2003'
+    volumes:
+      - influxdb_data:/var/lib/influxdb
+  gatling-grafana:
+    build: ./grafana
+    env_file: configuration.env
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana_data:/var/lib/grafana
+volumes:
+  grafana_data:
+  influxdb_data:
