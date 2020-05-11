@@ -53,7 +53,7 @@ Now deploy the infra from the `gatling-infra` project:
 
 ### 4. Run the test
 Now run the loadtest on AWS using the `gatling-runner-aws` project:  
-`AWS_PROFILE=<profile> VPC_ID=vpc-bf6957d9 CLUSTER=gatling-cluster TASK_DEFINITION=gatling-runner CONTAINERS=10 USERS=10 SIMULATION=nl.codecontrol.gatling.simulations.BasicSimulation mvn clean compile exec:exec`
+`AWS_PROFILE=<profile> VPC_ID=<id> REPORT_BUCKET=<bucket> CLUSTER=gatling-cluster TASK_DEFINITION=gatling-runner SIMULATION=nl.codecontrol.gatling.simulations.BasicSimulation CONTAINERS=10 USERS=10  mvn clean compile exec:exec`
 
 ### Important
 When making changes to the Gatling code in the `gatling-runner` project, don't forget to:  
