@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk8:jre8u242-b08-alpine
+FROM adoptopenjdk/openjdk11:jre-11.0.6_10-alpine
 
 ARG TIME_ZONE=Europe/Amsterdam
 
