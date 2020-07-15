@@ -1,7 +1,6 @@
 package nl.codecontrol.cdk.gatling.runner;
 
 import software.amazon.awscdk.core.Construct;
-import software.amazon.awscdk.core.RemovalPolicy;
 import software.amazon.awscdk.core.Stack;
 import software.amazon.awscdk.core.StackProps;
 import software.amazon.awscdk.services.ec2.IVpc;
@@ -9,8 +8,6 @@ import software.amazon.awscdk.services.ec2.Vpc;
 import software.amazon.awscdk.services.ec2.VpcLookupOptions;
 import software.amazon.awscdk.services.ecs.Cluster;
 import software.amazon.awscdk.services.iam.Role;
-import software.amazon.awscdk.services.s3.BlockPublicAccess;
-import software.amazon.awscdk.services.s3.Bucket;
 
 /**
  * Creates the CloudFormation for the AWS ECS Cluster and Task definition for the Gatling Runner stack.
