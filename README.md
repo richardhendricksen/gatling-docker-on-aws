@@ -19,7 +19,7 @@ Blog describing the new setup is underway.
 ### gatling-infra
 Contains AWS CDK project for creating needed infra for running loadtest on AWS.  
 
-See [README.md](gatling-runner/README.md) in project. 
+See [README.md](gatling-infra/README.md) in project. 
 
 ### gatling-monitoring
 Dockerfiles for realtime Gatling Monitoring  
@@ -36,7 +36,7 @@ See [README.md](gatling-runner/README.md) in project.
 ### gatling-runner-aws
 AWS SDK project for running the loadtest on AWS.  
 
-See [README.md](aws-loadtest-runner/README.md) in project. 
+See [README.md](gatling-runner-aws/README.md) in project. 
 
 ## How to use
 
