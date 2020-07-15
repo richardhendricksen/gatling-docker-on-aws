@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk8:alpine
+FROM adoptopenjdk/openjdk8:jre8u242-b08-alpine
 
 ARG TIME_ZONE=Europe/Amsterdam
 
@@ -11,7 +11,7 @@ RUN apk --purge -v del py-pip && \
 
 WORKDIR /gatling
 
-COPY target/ /gatling/target
+COPY target/ ./target
 COPY bin/run.sh .
 
 ENTRYPOINT ["./run.sh"]

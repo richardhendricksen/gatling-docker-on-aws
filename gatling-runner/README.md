@@ -1,7 +1,7 @@
 # gatling-runner
 
 ## Run
-### Maven
+### Using Maven
 `mvn clean gatling:test`
 
 ### From Jar file
@@ -12,14 +12,14 @@ JAVA_OPTS="-server -Xmx1G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:+HeapDump
 java $JAVA_OPTS $USER_ARGS -cp $COMPILATION_CLASSPATH io.gatling.app.Gatling -s nl.codecontrol.gatling.simulations.BasicSimulation
 ```
 
-### Docker
+### Using Docker
 
 #### Creating docker image
 `docker build -t gatling-runner .`     
 
 #### Test docker image locally
 Use docker volume to add your AWS credentials that has permission to write to the S3 bucket. You can also optionally provide the AWS profile:  
-`docker run --rm -v ${HOME}/.aws/credentials:/root/.aws/credentials:ro gatling-runner -r gatling-loadtest [-p <profile]`  
+`docker run --rm -v ${HOME}/.aws/credentials:/root/.aws/credentials:ro -e SIMULATION=nl.codecontrol.gatling.simulations.BasicSimulation -e REPORT_BUCKET=<S3_BUCKET> [-e AWS_PROFILE=<AWS_PROFILE>] gatling-runner `  
 
 ### Running on AWS
 See `gatling-runner-aws` module.
