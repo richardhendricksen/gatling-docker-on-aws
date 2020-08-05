@@ -36,6 +36,7 @@ jobs:
         run: |
           mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean package
           cdk deploy GatlingRunnerEcsStack --require-approval never
+          cdk deploy GatlingMonitoringEcsStack --require-approval never
 
       - name: Run loadtest
         env:
@@ -62,4 +63,6 @@ jobs:
 
       - name: Cleanup infra
         working-directory: ./gatling-infra
-        run: cdk destroy GatlingRunnerEcsStack --force
+        run: |
+        cdk destroy GatlingRunnerEcsStack --force
+        cdk destroy GatlingMonitoringEcsStack --force
