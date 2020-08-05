@@ -59,3 +59,8 @@ Now run the loadtest on AWS using the `gatling-runner-aws` project:
 When making changes to the Gatling code in the `gatling-runner` project, don't forget to:  
  1. build your `gatling-runner` project using Maven  
  2. and re-deploy your `GatlingRunnerEcsStack` from `gatling-infra` so AWS CDK will update your Docker image containing the Gatling code  
+
+## IAM Policy Template
+Since this project uses many AWS services it can be a hassle to set all IAM permissions to get it to work if you dont want to run with admin rights.  
+In the root of this project is a IAM policy template: `iam_policy_template.json`.  
+This template contains al the needed permissions to run this project. Just make sure to replace `<result_bucket>` with your actual bucket name.

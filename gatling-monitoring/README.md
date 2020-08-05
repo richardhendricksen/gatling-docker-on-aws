@@ -1,15 +1,15 @@
 # Realtime monitoring loadtest
-To be able to realtime monitor our loadtest, we have a seperate InfluxDB and Grafana stack that can be deployed on a AWS cluster.
+To be able to realtime monitor our loadtest, we have a separate InfluxDB and Grafana stack that can be deployed on an AWS cluster.
 The Gatling tests will then use graphite to report their status/results to this cluster and we can view this in the included Grafana dashboard.
 
 ## Run locally
 Run: `docker-compose up`.
 
 ## Run on AWS
-Use the `gatling-runner-aws` project for this.
+Use the `gatling-infra` project for this.
 
-### Gatling runners
-The Gatling runners need to write their data to the InfluxDB.
+### Configure Gatling
+Gatling needs to write their data to the InfluxDB.
 Edit the `graphite` section in the `gatling.conf`. Edit the host to where InfluxDB lives, use either the ip address or the dns from the load balancer.
 ```
     graphite {
@@ -26,3 +26,7 @@ Edit the `graphite` section in the `gatling.conf`. Edit the host to where Influx
 ## Making changes
 Both InfluxDB and Grafana are fully configured using Docker files.
 Make the needed changes and use the `aws-cdk` project to rebuild the docker images.
+
+## Getting loadbalancer DNS name
+After creating the monitoring stack you can retrieve the loadbalancer DNS using:  
+`aws elbv2 describe-load-balancers --names gatling-monitoring`
