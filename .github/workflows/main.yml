@@ -64,5 +64,5 @@ jobs:
       - name: Cleanup infra
         working-directory: ./gatling-infra
         run: |
-        cdk destroy GatlingRunnerEcsStack --force
-        cdk destroy GatlingMonitoringEcsStack --force
+          cdk destroy GatlingRunnerEcsStack --force
+          cdk destroy GatlingMonitoringEcsStack --force
