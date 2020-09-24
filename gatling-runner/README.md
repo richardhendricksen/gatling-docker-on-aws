@@ -22,4 +22,4 @@ Use docker volume to add your AWS credentials that has permission to write to th
 `docker run --rm -v ${HOME}/.aws/credentials:/root/.aws/credentials:ro -e SIMULATION=nl.codecontrol.gatling.simulations.BasicSimulation -e REPORT_BUCKET=<S3_BUCKET> [-e AWS_PROFILE=<AWS_PROFILE>] gatling-runner `  
 
 ### Running on AWS
-See `gatling-runner-aws` module.
+See `aws-test-runner` module.

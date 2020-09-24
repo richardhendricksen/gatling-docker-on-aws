@@ -16,6 +16,11 @@ Blog describing the new setup is underway.
 
 ## Projects in this repository
 
+### aws-test-runner
+AWS SDK project for running the loadtest on AWS.  
+
+See [README.md](aws-test-runner/README.md) in project. 
+
 ### gatling-infra
 Contains AWS CDK project for creating needed infra for running loadtest on AWS.  
 
@@ -32,12 +37,6 @@ Contains Dockerfile to build image to run on AWS.
 
 See [README.md](gatling-runner/README.md) in project. 
 
-
-### gatling-runner-aws
-AWS SDK project for running the loadtest on AWS.  
-
-See [README.md](gatling-runner-aws/README.md) in project. 
-
 ## How to use
 
 ### 1. Build gatling-runner project
@@ -52,7 +51,7 @@ Now deploy the infra from the `gatling-infra` project:
 `VPC_ID=<id> REPORT_BUCKET=<bucket> cdk deploy GatlingRunnerEcsStack --profile <profile>`  
 
 ### 4. Run the test
-Now run the loadtest on AWS using the `gatling-runner-aws` project:  
+Now run the loadtest on AWS using the `aws-test-runner` project:  
 `AWS_PROFILE=<profile> VPC_ID=<id> REPORT_BUCKET=<bucket> CLUSTER=gatling-cluster TASK_DEFINITION=gatling-runner SIMULATION=nl.codecontrol.gatling.simulations.BasicSimulation CONTAINERS=10 USERS=10  mvn clean compile exec:exec`
 
 ### Important

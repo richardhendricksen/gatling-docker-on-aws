@@ -45,7 +45,7 @@ jobs:
           CONTAINERS: 2
           USERS: 10
           SIMULATION: nl.codecontrol.gatling.simulations.BasicSimulation
-        working-directory: ./gatling-runner-aws
+        working-directory: ./aws-test-runner
         run: |
           aws s3 rm s3://${REPORT_BUCKET}/logs --recursive
           mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean compile exec:exec
