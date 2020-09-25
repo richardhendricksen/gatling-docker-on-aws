@@ -44,6 +44,7 @@ jobs:
           TASK_DEFINITION: gatling-runner
           CONTAINERS: 2
           USERS: 10
+          MAX_DURATION: 1
           SIMULATION: nl.codecontrol.gatling.simulations.BasicSimulation
         working-directory: ./aws-test-runner
         run: |
