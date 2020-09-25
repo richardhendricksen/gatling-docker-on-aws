@@ -29,7 +29,8 @@ See [README.md](gatling-infra/README.md) in project.
 ### gatling-monitoring
 Dockerfiles for realtime Gatling Monitoring  
 
-See [README.md](gatling-monitoring/README.md) in project. 
+See [README.md](gatling-monitoring/README.md) in project.  
+[<img src="https://raw.githubusercontent.com/richardhendricksen/gatling-docker-on-aws/master/images/dashboard.png" width="600">](https://raw.githubusercontent.com/richardhendricksen/gatling-docker-on-aws/master/images/dashboard.png)
 
 ### gatling-runner
 Mavenized Gatling project containing loadtest code.  

@@ -1,6 +1,7 @@
 # Realtime monitoring loadtest
 To be able to realtime monitor our loadtest, we have a separate InfluxDB and Grafana stack that can be deployed on an AWS cluster.
 The Gatling tests will then use graphite to report their status/results to this cluster and we can view this in the included Grafana dashboard.
+[<img src="https://raw.githubusercontent.com/richardhendricksen/gatling-docker-on-aws/master/images/dashboard.png" width="800">](https://raw.githubusercontent.com/richardhendricksen/gatling-docker-on-aws/master/images/dashboard.png)
 
 ## Run locally
 Run: `docker-compose up`.
