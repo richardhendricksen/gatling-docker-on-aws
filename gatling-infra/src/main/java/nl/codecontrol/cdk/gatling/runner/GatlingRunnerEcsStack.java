@@ -1,6 +1,9 @@
 package nl.codecontrol.cdk.gatling.runner;
 
+import com.sun.tools.javac.util.List;
 import software.amazon.awscdk.core.Construct;
+import software.amazon.awscdk.core.Duration;
+import software.amazon.awscdk.core.RemovalPolicy;
 import software.amazon.awscdk.core.Stack;
 import software.amazon.awscdk.core.StackProps;
 import software.amazon.awscdk.services.ec2.IVpc;
@@ -8,6 +11,9 @@ import software.amazon.awscdk.services.ec2.Vpc;
 import software.amazon.awscdk.services.ec2.VpcLookupOptions;
 import software.amazon.awscdk.services.ecs.Cluster;
 import software.amazon.awscdk.services.iam.Role;
+import software.amazon.awscdk.services.s3.BlockPublicAccess;
+import software.amazon.awscdk.services.s3.Bucket;
+import software.amazon.awscdk.services.s3.LifecycleRule;
 
 /**
  * Creates the CloudFormation for the AWS ECS Cluster and Task definition for the Gatling Runner stack.
@@ -27,6 +33,19 @@ public class GatlingRunnerEcsStack extends Stack {
         final Cluster ecsCluster = Cluster.Builder.create(this, "GatlingRunnerCluster")
                 .clusterName(builder.ecsClusterName)
                 .vpc(vpc)
+                .build();
+
+        // S3 bucket for results
+        Bucket.Builder.create(this, "GatlingRunnerBucket")
+                .bucketName(builder.bucketName)
+                .blockPublicAccess(BlockPublicAccess.Builder.create()
+                        .blockPublicAcls(false)
+                        .blockPublicPolicy(false)
+                        .ignorePublicAcls(false)
+                        .restrictPublicBuckets(false)
+                        .build())
+                .removalPolicy(RemovalPolicy.DESTROY)
+                .lifecycleRules(List.of(LifecycleRule.builder().id("delete_after_14_days").expiration(Duration.days(14)).build()))
                 .build();
 
         // IAM Roles needed to execute AWS ECS Fargate tasks

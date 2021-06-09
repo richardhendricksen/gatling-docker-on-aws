@@ -64,6 +64,8 @@ jobs:
 
       - name: Cleanup infra
         working-directory: ./gatling-infra
+        #Clear S3 bucket before removing stack
         run: |
+          aws s3 rm s3://${REPORT_BUCKET}/logs --recursive
           cdk destroy GatlingRunnerEcsStack --force
           cdk destroy GatlingMonitoringEcsStack --force
