@@ -1,6 +1,5 @@
 package nl.codecontrol.cdk.gatling.runner;
 
-import com.sun.tools.javac.util.List;
 import software.amazon.awscdk.core.Construct;
 import software.amazon.awscdk.core.Duration;
 import software.amazon.awscdk.core.RemovalPolicy;
@@ -14,6 +13,8 @@ import software.amazon.awscdk.services.iam.Role;
 import software.amazon.awscdk.services.s3.BlockPublicAccess;
 import software.amazon.awscdk.services.s3.Bucket;
 import software.amazon.awscdk.services.s3.LifecycleRule;
+
+import java.util.List;
 
 /**
  * Creates the CloudFormation for the AWS ECS Cluster and Task definition for the Gatling Runner stack.

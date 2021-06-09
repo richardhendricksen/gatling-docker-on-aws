@@ -16,11 +16,11 @@ jobs:
 
       - uses: actions/setup-java@v1
         with:
-          java-version: '8'
+          java-version: '11'
 
       - uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 14.x
 
       - name: Install required dependencies
         run: |
