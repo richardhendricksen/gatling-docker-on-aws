@@ -5,8 +5,6 @@ The old setup described in my [original article](https://medium.com/@richard.hen
 
 
 ## Prerequisites  
-### Create  
-* S3 bucket for Gatling logs  
 
 ### Install  
 * aws-cli  
@@ -55,6 +53,12 @@ Now deploy the infra from the `gatling-infra` project:
 ### 4. Run the test
 Now run the loadtest on AWS using the `aws-test-runner` project:  
 `AWS_PROFILE=<profile> VPC_ID=<id> REPORT_BUCKET=<bucket> CLUSTER=gatling-cluster TASK_DEFINITION=gatling-runner SIMULATION=nl.codecontrol.gatling.simulations.BasicSimulation CONTAINERS=10 USERS=10  mvn clean compile exec:exec`
+
+### 5. (optionally) Destroy deployed infra
+When done with loadtesting the loadtest infra can easily be destroyed, saving on costs:    
+`VPC_ID=<id> REPORT_BUCKET=<bucket> cdk destroy GatlingMonitoringEcsStack --profile <profile>`  
+`VPC_ID=<id> REPORT_BUCKET=<bucket> cdk destroy GatlingRunnerEcsStack --profile <profile>`  
+Make sure the S3 bucket is empty before running `cdk destroy` or it will fail since CloudFormation cannot delete S3 buckets that aren't empty.
 
 ### Important
 When making changes to the Gatling code in the `gatling-runner` project, don't forget to:  
